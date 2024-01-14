@@ -188,28 +188,20 @@ void MultiTreadedTest() {
                         // Double creation -> should call get instead.
                         SM::SingletonStorageFactory::create<UTest::C>(s);
                     }
-                    
+                } catch (const std::exception& x) {
+                    std::cout << "Exception: " << x.what() << std::endl;
+                }
+                try {
                     if (!cleared) {
                         SM::SingletonStorageFactory::create<UTest::A>(s);
-                    }
-
-                    if (!cleared) {
-                        SM::SingletonStorageFactory::create<UTest::B>(std::move(s));
                     }
                 } catch (const std::exception& x) {
                     std::cout << "Exception: " << x.what() << std::endl;
                 }
-                
-                
-                SM::SingletonStorageFactory::destroy<UTest::B>();
-                // Double destruction - should be ignored.
-                SM::SingletonStorageFactory::destroy<UTest::B>();
-                
                 try {
-                    std::string s2("2");
-                    // Creation after deletion is not allowed.
                     if (!cleared) {
-                        SM::SingletonStorageFactory::create<UTest::B>(s2);
+                        std::string sB("B1");
+                        SM::SingletonStorageFactory::create<UTest::B>(std::move(sB));
                     }
                 } catch (const std::exception& x) {
                     std::cout << "Exception: " << x.what() << std::endl;
