@@ -34,35 +34,36 @@ namespace SM {
 template < typename T, typename ...ARGS >
 std::weak_ptr<T> SingletonStorageImpl::create(ARGS&&... args)
     noexcept( false ) {
-    // read lock first
+    // READ (shared) LOCK lock first,
     // if object if not available
-    // => write lock
+    // => write lock,
     //  if object if not available again => create it,
     //  otherwise return existed object.    
-    std::shared_lock<std::shared_mutex> rlock(mLock);
+    std::shared_lock<std::shared_mutex> rwlock(mLock);
     auto wptr = find<T>(true /*disallow deleted*/);
     if (0 != wptr.use_count()) {
         return wptr;
     } 
-    // Release the read lock.
-    rlock.unlock();
+    // RELEASE READ (shared) LOCK.
+    rwlock.unlock();
     
     // Protect from the recursive calls for the same type from the same thread.
     // Enter the write (recursive) lock.
     // At this point only call from the same thread can pass through.
+    // EXCLUSIVE (recursive) LOCK.
     std::lock_guard<std::recursive_mutex> reLock(mRecursiveLock);
-    
-    // Lock read mutex again.
-    rlock.lock();
-    // Create a new instance, but first check again.
+    // READ (shared) LOCK again.
+    rwlock.lock();
+    // First, check instance existence again,
+    // another thread can already create the correspondent instance.
     auto it = mFastAccess.find(makeKey<T>());
     if (it != mFastAccess.end()) {
-        // Another thread between rlock.unlock() and reLock.lock() calls
+        // Another thread between rwlock.unlock() and reLock.lock() calls
         // can delete singleton instance of the same type.
         return find<T>(true /*disallow deleted*/);
     }
-    // Release read lock again.
-    rlock.unlock();
+    // RELEASE READ (shared) LOCK, but still in EXCLUSIVE (recursive) LOCK.
+    rwlock.unlock();
     
     auto itInsert = mRecursiveFlags.insert({makeKey<T>(), false});
     if (itInsert.first->second) {
@@ -79,19 +80,26 @@ std::weak_ptr<T> SingletonStorageImpl::create(ARGS&&... args)
     
     // Reset flag even T(...) may throw an exception.
     ScopeGuard guard([&]() {     
-        // Reset flag.
-        mRecursiveFlags[makeKey<T>()] = false;
+        // Reset flag, can't use iterator,
+        // it can be invalidated by a recursive call,
+        // or even deleted by "reset" method
+        // This call (destructor) is under EXCLUSIVE (recursive) lock.
+        auto pit = mRecursiveFlags.find(makeKey<T>());
+        if (pit != mRecursiveFlags.end()) {
+            pit->second = false;
+        }
     });
     
     // At this point T(...) constructor can call this method again recursively.
     auto newObject = std::make_shared<T>(std::forward<ARGS>(args)...);
 
     // Create a new StorageObject<T> instance.
+    // WRITE (shared) LOCK
     std::unique_lock<std::shared_mutex> wlock(mLock);
     // Insert into the beginning,
     // making sure the destruction will be performed in a reverse order.
     mInstances.push_front(std::make_shared<StorageObject<T>>(newObject));
-    // Add the new key for the singlton instance.
+    // Add the new key for the singleton instance.
     mFastAccess.insert({makeKey<T>(), IteratorOptional(mInstances.begin())});
     
     return std::weak_ptr<T>(newObject);
@@ -99,7 +107,7 @@ std::weak_ptr<T> SingletonStorageImpl::create(ARGS&&... args)
     
 template< typename T >
 std::weak_ptr<T> SingletonStorageImpl::get() noexcept(true) {
-    std::shared_lock rlock(mLock);
+    std::shared_lock rwlock(mLock);
     return find<T>(false /*ignore deleted*/);
 }
 
@@ -107,7 +115,7 @@ template< typename ...TS >
 void SingletonStorageImpl::destroy() noexcept(true) {
     // Container for objects deletion outside lock.
     std::list<std::shared_ptr<VTObject>> objectsToBeDeleted;
-    std::unique_lock<std::shared_mutex> wlock(mLock);
+    std::unique_lock<std::shared_mutex> rwlock(mLock);
     auto func = [&](std::type_index idx) {
         auto itAccess = mFastAccess.find(idx);
         if (itAccess == mFastAccess.end() || !itAccess->second) {
@@ -137,7 +145,7 @@ void SingletonStorageImpl::destroy() noexcept(true) {
      );
  
     // Releases the lock before destroying singleton objects.
-    wlock.unlock();
+    rwlock.unlock();
     // Because singleton objects are wrapped by the shared_ptr
     // actual deletion will be done when the last weak_ptr
     // got released by the clients, obtained through
@@ -148,7 +156,7 @@ void SingletonStorageImpl::destroy() noexcept(true) {
 void SingletonStorageImpl::clearUp(bool removeKeys) noexcept(true)
 {
     std::list<std::shared_ptr<VTObject>> objectsToBeDeleted;
-    std::unique_lock<std::shared_mutex> wlock(mLock);
+    std::unique_lock<std::shared_mutex> rwlock(mLock);
     
     while (!mInstances.empty()) {
         // Because created objects were inserted into mInstances list
@@ -171,7 +179,7 @@ void SingletonStorageImpl::clearUp(bool removeKeys) noexcept(true)
     }
         
     // Releases the lock before destroying singleton objects.
-    wlock.unlock();
+    rwlock.unlock();
     // Because singleton objects are wrapped by the shared_ptr
     // actual deletion will be done when the last weak_ptr
     // got released by the clients, obtained through
@@ -185,6 +193,8 @@ void SingletonStorageImpl::clear() noexcept(true) {
 
 void SingletonStorageImpl::reset() noexcept(true) {
     clearUp(true);
+    std::lock_guard<std::recursive_mutex> reLock(mRecursiveLock);
+    mRecursiveFlags.clear();    
 }
 
 template < typename T >

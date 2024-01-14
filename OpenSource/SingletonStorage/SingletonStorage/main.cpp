@@ -178,7 +178,7 @@ void MultiTreadedTest() {
                 std::this_thread::yield();
             }
             
-            int count = 10;
+            int count = 11;
             while (!stopped) {
                 ++rounds;
                 std::string s("1");
