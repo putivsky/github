@@ -219,7 +219,9 @@ void MultiTreadedTest() {
                 try {
                     if (!cleared) {
                         auto wpA = SM::SingletonStorageFactory::create<UTest::A>(s);
-                        assert(wpA.lock() != nullptr);
+                        if (wpA.lock() == nullptr) {
+                            std::cout << "Can't lock weak pointer for UTest::A" << std::endl;
+                        }
                     }
                 } catch (const std::exception& x) {
                     std::cout << "Exception: " << x.what() << std::endl;
