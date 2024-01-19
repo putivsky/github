@@ -192,9 +192,9 @@ void SingletonStorageImpl::clear() noexcept(true) {
 }
 
 void SingletonStorageImpl::reset() noexcept(true) {
-    clearUp(true);
     std::lock_guard<std::recursive_mutex> reLock(mRecursiveLock);
-    mRecursiveFlags.clear();    
+    clearUp(true);
+    mRecursiveFlags.clear();
 }
 
 template < typename T >
