@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22689"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="MainWindowController">
+            <connections>
+                <outlet property="addButton" destination="KY2-Fo-Enh" id="ilN-XD-lgq"/>
+                <outlet property="exitButton" destination="89X-7B-6Jl" id="20D-vG-GVj"/>
+                <outlet property="hostView" destination="uwn-0n-Muj" id="O54-2U-CJi"/>
+                <outlet property="logoImage" destination="qTS-rC-CCQ" id="O5F-X6-F88"/>
+                <outlet property="window" destination="S3b-iU-Rg4" id="hjv-rN-d5P"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <window title="ArroyoControl" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="S3b-iU-Rg4" userLabel="ArroyoControl">
+            <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="674" y="327" width="360" height="462"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1792" height="1095"/>
+            <view key="contentView" id="Dyc-zl-7Rs">
+                <rect key="frame" x="0.0" y="0.0" width="360" height="462"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qTS-rC-CCQ">
+                        <rect key="frame" x="0.0" y="421" width="363" height="45"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageAlignment="left" imageFrameStyle="groove" image="arroyo_bar" id="Az5-Hk-Ik5"/>
+                    </imageView>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KY2-Fo-Enh" userLabel="Add Panel">
+                        <rect key="frame" x="201" y="427" width="70" height="30"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="uxH-cx-LW2">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <string key="title">Add
+Panel</string>
+                            <font key="font" size="12" name="Arial-BoldMT"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="addPanelAction:" target="-1" id="vwt-jn-s5j"/>
+                        </connections>
+                    </button>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="89X-7B-6Jl">
+                        <rect key="frame" x="281" y="427" width="70" height="30"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="square" title="Exit" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="0iW-3v-woO">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" size="12" name="Arial-BoldMT"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="terminate:" target="-1" id="VDC-OE-Udw"/>
+                        </connections>
+                    </button>
+                    <customView autoresizesSubviews="NO" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uwn-0n-Muj" userLabel="MainView">
+                        <rect key="frame" x="0.0" y="0.0" width="360" height="424"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </customView>
+                </subviews>
+            </view>
+            <connections>
+                <outlet property="delegate" destination="-2" id="ToH-vw-MWS"/>
+            </connections>
+            <point key="canvasLocation" x="-3474" y="136"/>
+        </window>
+    </objects>
+    <resources>
+        <image name="arroyo_bar" width="240" height="23"/>
+    </resources>
+</document>
