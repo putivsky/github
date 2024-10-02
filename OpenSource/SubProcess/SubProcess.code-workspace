@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "PipeComm"
+		},
+		{
+			"path": "TestSubProcess"
+		},
+		{
+			"path": "TestChildProcess"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {}
+}

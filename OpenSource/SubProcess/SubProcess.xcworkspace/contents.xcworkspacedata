@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:TestChildProcess/TestChildProcess.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:TestSubProcess/TestSubProcess.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:PipeComm/PipeComm.xcodeproj">
+   </FileRef>
+</Workspace>
