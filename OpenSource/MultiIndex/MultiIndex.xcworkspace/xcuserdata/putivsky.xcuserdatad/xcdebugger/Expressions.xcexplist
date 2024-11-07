@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "OrderedMultiSet&lt;16ul, std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;::erase:OrderedMutliSet.hpp">
+      </ContextState>
+      <ContextState
+         contextName = "OrderedMultiSet&lt;16ul, std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;::BucketPredicate::operator():OrderedMutliSet.h">
+      </ContextState>
+      <ContextState
+         contextName = "MultiIndexTable&lt;(LockPolicy)1, 32ul, Object, IndexUnOrderedPredicate, IndexOrderedPredicate&gt;::CommonIndex&lt;UnorderedMultiSet&lt;32ul, std::__1::__list_iterator&lt;Object, void*&gt;, IndexUnOrderedPredicate&gt;, std::__1::tuple&lt;unsigned long, float, IndexUnOrderedPredicate&gt;&gt;::Update:MultiIndex.hpp">
+      </ContextState>
+      <ContextState
+         contextName = "OrderedMultiSet&lt;std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;::NextIter:OrderedMutliSet.h">
+      </ContextState>
+      <ContextState
+         contextName = "MultiIndexTable&lt;(LockPolicy)0, Object, IndexUnOrderedPredicate, IndexOrderedPredicate&gt;::Update&lt;1ul&gt;:MultiIndex.hpp">
+      </ContextState>
+      <ContextState
+         contextName = "OrderedMultiSet&lt;std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;::base_iterator::Incr:OrderedMutliSet.h">
+         <PersistentStrings>
+            <PersistentString
+               value = "(BucketNode*)m_ptr">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "OrderedMultiSet&lt;16ul, std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;::insert:OrderedMutliSet.hpp">
+      </ContextState>
+      <ContextState
+         contextName = "MultiIndexTable&lt;(LockPolicy)1, 32ul, Object, IndexUnOrderedPredicate, IndexOrderedPredicate&gt;::CommonIndex&lt;OrderedMultiSet&lt;32ul, std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;, std::__1::tuple&lt;unsigned long, float, IndexOrderedPredicate&gt;&gt;::FindBySelector&lt;MultiIndexTable&lt;(LockPolicy)1, 32ul, Object, IndexUnOrderedPredicate, IndexOrderedPredicate&gt;::CommonIndex&lt;OrderedMultiSet&lt;32ul, std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;, std::__1::tuple&lt;unsigned long, float, IndexOrderedPredicate&gt;&gt;::FindAll(Object const&amp;) const::&apos;lambda&apos;(Object const&amp;)&gt;:MultiIndex.hpp">
+      </ContextState>
+      <ContextState
+         contextName = "MultiIndexTable&lt;(LockPolicy)0, Object, IndexUnOrderedPredicate, IndexOrderedPredicate&gt;::CommonIndex&lt;OrderedMultiSet&lt;std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;, std::__1::tuple&lt;unsigned long, unsigned long, float, IndexOrderedPredicate&gt;&gt;::Insert:MultiIndex.hpp">
+      </ContextState>
+      <ContextState
+         contextName = "OrderedMultiSet&lt;1ul, std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;::insert:OrderedMutliSet.hpp">
+      </ContextState>
+      <ContextState
+         contextName = "MultiIndexTable&lt;(LockPolicy)0, 16ul, Object, IndexUnOrderedPredicate, IndexOrderedPredicate&gt;::CommonIndex&lt;OrderedMultiSet&lt;16ul, std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;, std::__1::tuple&lt;unsigned long, float, IndexOrderedPredicate&gt;&gt;::FindIterators:MultiIndex.hpp">
+      </ContextState>
+      <ContextState
+         contextName = "MultiIndexTable&lt;(LockPolicy)1, 8ul, Object, IndexUnOrderedPredicate, IndexOrderedPredicate&gt;::CommonIndex&lt;UnorderedMultiSet&lt;8ul, std::__1::__list_iterator&lt;Object, void*&gt;, IndexUnOrderedPredicate&gt;, std::__1::tuple&lt;unsigned long, float, IndexUnOrderedPredicate&gt;&gt;::Update:MultiIndex.hpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "(*p.first)">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "OrderedMultiSet&lt;std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;::EqualRange&lt;Object, OrderedMultiSet&lt;std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;::const_iterator&gt;:OrderedMutliSet.h">
+      </ContextState>
+      <ContextState
+         contextName = "OrderedMultiSet&lt;16ul, std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;::Destroy:OrderedMutliSet.h">
+      </ContextState>
+      <ContextState
+         contextName = "MultiIndexTable&lt;(LockPolicy)0, 16ul, Object, IndexUnOrderedPredicate, IndexOrderedPredicate&gt;::CommonIndex&lt;OrderedMultiSet&lt;16ul, std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;, std::__1::tuple&lt;unsigned long, float, IndexOrderedPredicate&gt;&gt;::Update:MultiIndex.hpp">
+      </ContextState>
+      <ContextState
+         contextName = "UnorderedMultiSet&lt;8ul, std::__1::__list_iterator&lt;Object, void*&gt;, IndexUnOrderedPredicate&gt;::erase(std::__1::__list_iterator&lt;Object, void*&gt; const&amp;)::&apos;lambda&apos;(std::__1::__list_iterator&lt;Object, void*&gt; const&amp;, std::__1::__list_iterator&lt;Object, void*&gt; const&amp;)::operator()(std::__1::__list_iterator&lt;Object, void*&gt; const&amp;, std::__1::__list_iterator&lt;Object, void*&gt; const&amp;) const:UnorderedMutliSet.hpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "key">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "OrderedMultiSet&lt;16ul, std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;::EqualRange&lt;std::__1::__list_iterator&lt;Object, void*&gt;, OrderedMultiSet&lt;16ul, std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;::iterator&gt;:OrderedMutliSet.hpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "x-&gt;m_bucket.m_head[x-&gt;m_bucket.m_size - 1]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "IndexOrderedPredicate::operator():main.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "UnorderedMultiSet&lt;32ul, std::__1::__list_iterator&lt;Object, void*&gt;, IndexUnOrderedPredicate&gt;::equal_keys&lt;std::__1::__list_iterator&lt;Object, void*&gt;*, Object&gt;:UnorderedMutliSet.hpp">
+      </ContextState>
+      <ContextState
+         contextName = "OrderedMultiSet&lt;std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;::BucketPredicate::operator():OrderedMutliSet.h">
+      </ContextState>
+      <ContextState
+         contextName = "OrderedMultiSet&lt;std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;::LowerBound&lt;Object&gt;:OrderedMutliSet.h">
+         <PersistentStrings>
+            <PersistentString
+               value = "root-&gt;m_bucket.m_head[offset]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "OrderedMultiSet&lt;std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;::UpperBound&lt;Object&gt;:OrderedMutliSet.h">
+      </ContextState>
+      <ContextState
+         contextName = "MultiIndexTable&lt;(LockPolicy)1, 8ul, Object, IndexUnOrderedPredicate, IndexOrderedPredicate&gt;::CommonIndex&lt;OrderedMultiSet&lt;8ul, std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;, std::__1::tuple&lt;unsigned long, float, IndexOrderedPredicate&gt;&gt;::Update:MultiIndex.hpp">
+      </ContextState>
+      <ContextState
+         contextName = "UnorderedMultiSet&lt;16ul, std::__1::__list_iterator&lt;Object, void*&gt;, IndexUnOrderedPredicate&gt;::erase:UnorderedMutliSet.hpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "key">
+            </PersistentString>
+            <PersistentString
+               value = "*key">
+            </PersistentString>
+            <PersistentString
+               value = "bucket.m_head[1]">
+            </PersistentString>
+            <PersistentString
+               value = "*bucket.m_head[0]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "OrderedMultiSet&lt;16ul, std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;::base_iterator::operator++&lt;OrderedMultiSet&lt;16ul, std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;::iterator&gt;:OrderedMutliSet.h">
+      </ContextState>
+      <ContextState
+         contextName = "OrderedMultiSet&lt;std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;::FindLeafHigh:OrderedMutliSet.h">
+      </ContextState>
+      <ContextState
+         contextName = "OrderedMultiSet&lt;std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;::Remove:OrderedMutliSet.h">
+      </ContextState>
+      <ContextState
+         contextName = "auto bool MultiIndexTable&lt;(LockPolicy)1, 8ul, Object, IndexUnOrderedPredicate, IndexOrderedPredicate&gt;::Update&lt;1ul&gt;(Object const&amp;, Object&amp;&amp;)::&apos;lambda&apos;(auto&amp;...)::operator()&lt;MultiIndexTable&lt;(LockPolicy)1, 8ul, Object, IndexUnOrderedPredicate, IndexOrderedPredicate&gt;::CommonIndex&lt;UnorderedMultiSet&lt;8ul, std::__1::__list_iterator&lt;Object, void*&gt;, IndexUnOrderedPredicate&gt;, std::__1::tuple&lt;unsigned long, float, IndexUnOrderedPredicate&gt;&gt;, MultiIndexTable&lt;(LockPolicy)1, 8ul, Object, IndexUnOrderedPredicate, IndexOrderedPredicate&gt;::CommonIndex&lt;OrderedMultiSet&lt;8ul, std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;, std::__1::tuple&lt;unsigned long, float, IndexOrderedPredicate&gt;&gt;&gt;(auto&amp;...) const:MultiIndex.hpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "iter">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "OrderedMultiSet&lt;std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;::base_iterator::GetNodePtr:OrderedMutliSet.h">
+      </ContextState>
+      <ContextState
+         contextName = "MultiIndexTable&lt;(LockPolicy)0, Object, IndexUnOrderedPredicate, IndexOrderedPredicate&gt;::CommonIndex&lt;OrderedMultiSet&lt;std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;, std::__1::tuple&lt;unsigned long, unsigned long, float, IndexOrderedPredicate&gt;&gt;::FindBySelector&lt;MultiIndexTable&lt;(LockPolicy)0, Object, IndexUnOrderedPredicate, IndexOrderedPredicate&gt;::CommonIndex&lt;OrderedMultiSet&lt;std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;, std::__1::tuple&lt;unsigned long, unsigned long, float, IndexOrderedPredicate&gt;&gt;::FindAll(Object const&amp;) const::&apos;lambda&apos;(Object const&amp;)&gt;:MultiIndex.hpp">
+      </ContextState>
+      <ContextState
+         contextName = "OrderedMultiSet&lt;16ul, std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;::EqualRange&lt;Object, OrderedMultiSet&lt;16ul, std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;::const_iterator&gt;:OrderedMutliSet.h">
+      </ContextState>
+      <ContextState
+         contextName = "UnorderedMultiSet&lt;8ul, std::__1::__list_iterator&lt;Object, void*&gt;, IndexUnOrderedPredicate&gt;::erase:UnorderedMutliSet.hpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "*key">
+            </PersistentString>
+            <PersistentString
+               value = "bucket">
+            </PersistentString>
+            <PersistentString
+               value = "key">
+            </PersistentString>
+            <PersistentString
+               value = "bucket.m_head[0]">
+            </PersistentString>
+            <PersistentString
+               value = "bucket.m_head[1]">
+            </PersistentString>
+            <PersistentString
+               value = "bucket.m_head[2]">
+            </PersistentString>
+            <PersistentString
+               value = "bucket.m_head[offset] ">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "OrderedMultiSet&lt;std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;::EqualRange&lt;Object, OrderedMultiSet&lt;std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;::const_iterator&gt;:OrderedMutliSet.hpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "(BucketNode*)root-&gt;m_right">
+            </PersistentString>
+            <PersistentString
+               value = "(BucketNode*)root-&gt;m_left">
+            </PersistentString>
+            <PersistentString
+               value = "(BucketNode*)root">
+            </PersistentString>
+            <PersistentString
+               value = "(BucketNode*)result">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "OrderedMultiSet&lt;std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;::insert:OrderedMutliSet.hpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "(BucketNode*)parent">
+            </PersistentString>
+            <PersistentString
+               value = "node-&gt;m_bucket.m_head[node-&gt;m_bucket.m_size - 1]">
+            </PersistentString>
+            <PersistentString
+               value = "(BucketNode*)child">
+            </PersistentString>
+            <PersistentString
+               value = "newNode">
+            </PersistentString>
+            <PersistentString
+               value = "node">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "std::__1::__list_imp&lt;Object, std::__1::allocator&lt;Object&gt;&gt;::__unlink_nodes:list">
+      </ContextState>
+      <ContextState
+         contextName = "MultiIndexTable&lt;(LockPolicy)0, Object, IndexUnOrderedPredicate, IndexOrderedPredicate&gt;::CommonIndex&lt;OrderedMultiSet&lt;std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;, std::__1::tuple&lt;unsigned long, unsigned long, float, IndexOrderedPredicate&gt;&gt;::FindIterators:MultiIndex.hpp">
+      </ContextState>
+      <ContextState
+         contextName = "MultiIndexTable&lt;(LockPolicy)0, 16ul, Object, IndexUnOrderedPredicate, IndexOrderedPredicate&gt;::Delete&lt;1ul&gt;:MultiIndex.hpp">
+      </ContextState>
+      <ContextState
+         contextName = "main:main.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "OrderedMultiSet&lt;std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;::BucketPredicate::operator()&lt;Object&gt;:OrderedMutliSet.h">
+         <PersistentStrings>
+            <PersistentString
+               value = "first.m_head[first.m_size - 2]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "OrderedMultiSet&lt;std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;::Root:OrderedMutliSet.h">
+      </ContextState>
+      <ContextState
+         contextName = "OrderedMultiSet&lt;16ul, std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;::Remove:OrderedMutliSet.h">
+      </ContextState>
+      <ContextState
+         contextName = "OrderedMultiSet&lt;16ul, std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;::EqualRange&lt;std::__1::__list_iterator&lt;Object, void*&gt;, OrderedMultiSet&lt;16ul, std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;::iterator&gt;:OrderedMutliSet.h">
+      </ContextState>
+      <ContextState
+         contextName = "std::__1::__list_iterator&lt;Object, void*&gt;::operator*[abi:de180100]:list">
+      </ContextState>
+      <ContextState
+         contextName = "MultiIndexTable&lt;(LockPolicy)0, Object, IndexUnOrderedPredicate, IndexOrderedPredicate&gt;::CommonIndex&lt;OrderedMultiSet&lt;std::__1::__list_iterator&lt;Object, void*&gt;, IndexOrderedPredicate&gt;, std::__1::tuple&lt;unsigned long, unsigned long, float, IndexOrderedPredicate&gt;&gt;::FindAll:MultiIndex.hpp">
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>
