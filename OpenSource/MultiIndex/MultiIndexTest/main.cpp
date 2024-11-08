@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stddef.h>
+#include <unistd.h>
 #else
 #include <sys/sysctl.h>
 #include <mach/mach.h>
@@ -37,7 +38,19 @@ unsigned long long membytes(void) {
     
     return memCounter.WorkingSetSize;
 #elif defined (__linux__)
-    return 0;
+    
+    long rss = 0;
+    FILE* fp = nullptr;
+    if ((fp = fopen("/proc/self/statm", "r")) == nullptr) {
+        return 0;
+    }
+    if (fscanf(fp, "%*s%ld", &rss) != 1) {
+        fclose(fp);
+        return 0;
+    }
+    fclose(fp);
+    return (size_t)(rss * sysconf(_SC_PAGESIZE));
+    
 #else
   kern_return_t error;
   mach_msg_type_number_t outCount;
@@ -47,9 +60,7 @@ unsigned long long membytes(void) {
   outCount = MACH_TASK_BASIC_INFO_COUNT;
   error = task_info(mach_task_self(), MACH_TASK_BASIC_INFO, (task_info_t)&taskinfo, &outCount);
   if (error == KERN_SUCCESS) {
-    // type is mach_vm_size_t
-    //printf("vsize = %llu\n", (unsigned long long)taskinfo.virtual_size);
-    return taskinfo.resident_size;
+     return taskinfo.resident_size;
   } else {
     printf("error %d\n", (int)error);
     return 0;
