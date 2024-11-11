@@ -24,8 +24,9 @@
 template<typename Pred>
 using TupleParams = std::tuple<size_t, float, Pred>;
 
-#include "UnorderedMutliSet.h"
-#include "OrderedMutliSet.h"
+#include "HashedOrderedMultiSet.h"
+#include "OrderedMultiSet.h"
+#include "UnOrderedMultiSet.h"
 
 enum class LockPolicy {
     Internal = 0, // API takes care the proper read/write locking
@@ -82,6 +83,12 @@ public:
     }
 };
 
+struct HashedOrderedTraits {};
+// Unordered (hashed) and ordered index predicate must be derived from HashedOrderedTraits
+// and define two operators, i.e.
+// hash operator: size_t operator()(const T& first) const;
+// less operator: bool operator()(const T& first, const T& second) const;
+
 struct UnOrderedTraits {};
 // Unordered index predicate must be derived from UnOrderedTraits
 // and define two operators, i.e.
@@ -94,14 +101,13 @@ struct OrderedTraits {};
 // less operator: bool operator(const T& first, const T& second) const;
 
 // class indexing T class objects by multiple predicates as indexes.
-template<LockPolicy L, size_t Capacity, typename T, typename... P>
+// @Capacity defines the size of buckets for ordered and unordered indexes.
+template<LockPolicy L, uint32_t Capacity, typename T, typename... P>
 class MultiIndexTable
 {
     using ObjectContainer = std::list<T>;
     using Iter = typename ObjectContainer::iterator;
-    using CIter = typename ObjectContainer::const_iterator;
     using BitRef = typename std::bitset<sizeof...(P)>::reference;
-    using Policy = LockPolicy;
     using ItersContainer = std::list<Iter>;
 
     template<typename I, typename... ARGS>
@@ -116,7 +122,7 @@ class MultiIndexTable
         ItersContainer FindIterators(const T& where) const noexcept;
 
         void Insert(const Iter& itRef, const BitRef affected) noexcept;
-        void Update(const Iter& itRef, const T& what, BitRef affected) noexcept;
+        void Update(const Iter& itRef, const T& what, BitRef isAffected) noexcept;
         void Delete(const Iter& itRef) noexcept;
         std::optional<T> FindFirst(const T& what) const noexcept;
         ObjectContainer FindAll(const T& what) const noexcept;
@@ -127,20 +133,23 @@ class MultiIndexTable
         void Traverse();
     };
 
-    // converts predicates types into Ordered/Unordered indexes.
-    template<typename Pred, bool>
-    struct IdxType { /*static_assert(false);*/ };
+    // converts predicates types into Hashed/Unordered/Ordered indexes.
+    template<typename Pred, bool ordered, bool hashed>
+    struct IdxType {};
 
-    // partial specialization for UnOrdered predicate
     template<typename Pred>
-    struct IdxType<Pred, true> {
-        using Type = CommonIndex<UnorderedMultiSet<Capacity, Iter, Pred>, TupleParams<Pred>>;
+    struct IdxType<Pred, true, true> {
+        using Type = CommonIndex<HashedOrderedMultiSet<Capacity, Iter, Pred>, TupleParams<Pred>>;
     };
-
-    // partial specialization for Ordered predicate
+    
     template<typename Pred>
-    struct IdxType<Pred, false> {
+    struct IdxType<Pred, true, false> {
         using Type = CommonIndex<OrderedMultiSet<Capacity, Iter, Pred>, TupleParams<Pred>>;
+    };
+    
+    template<typename Pred>
+    struct IdxType<Pred, false, true> {
+        using Type = CommonIndex<UnOrderedMultiSet<Capacity, Iter, Pred>, TupleParams<Pred>>;
     };
 
     // auto detection of the predicate type
@@ -148,10 +157,13 @@ class MultiIndexTable
     struct IdxDetector {
     private:
         static_assert(std::is_base_of<UnOrderedTraits, Pred>::value ||
-                      std::is_base_of<OrderedTraits, Pred>::value,
-                      "Predicate class must be derived from either OrderedTraits or UnOrderedTraits");
+                      std::is_base_of<OrderedTraits, Pred>::value ||
+                      std::is_base_of<HashedOrderedTraits, Pred>::value,
+                      "Predicate class must be derived from either OrderedTraits or UnOrderedTraits or HashedOrderedTraits");
     public:
-        using Type = typename IdxType<Pred, std::is_base_of<UnOrderedTraits, Pred>::value>::Type;
+        using Type = typename IdxType<Pred,
+            std::is_base_of<OrderedTraits, Pred>::value || std::is_base_of<HashedOrderedTraits, Pred>::value,
+            std::is_base_of<HashedOrderedTraits, Pred>::value || std::is_base_of<UnOrderedTraits, Pred>::value>::Type;
     };
 
     ObjectContainer m_objects;
@@ -161,7 +173,6 @@ class MultiIndexTable
 public:
     // Constructor
     // @hashSize defines the unordered indices hash table size
-    // @bucketSize defines the binary tree node, which is sorted array of iterators
     MultiIndexTable(size_t hashSize, float maxFactor, P&& ...predicates) noexcept;
     ~MultiIndexTable() noexcept;
     // operations - insert, update, delete, search.

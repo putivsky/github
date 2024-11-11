@@ -1,5 +1,5 @@
 //
-//  OrderedMutliSet.h
+//  OrderedMultiSet.h
 //  MultiIndex
 //
 //  Created by Yuri Putivsky on 10/12/24.
@@ -17,7 +17,7 @@
 // to reduce the memory usage overhead.
 // [0][1][2]...[M] - binary tree
 // [0] -> [0][1][2]...[N] - array of iterators sorted by keys
-template <size_t Capacity, typename Iter, typename Pred>
+template <uint32_t Capacity, typename Iter, typename Pred>
 class OrderedMultiSet {
     struct Bucket {
         size_t m_size{0};
@@ -192,7 +192,6 @@ public:
 
         inline friend bool operator==(const const_iterator& left, const const_iterator& right) noexcept {
             return static_cast<const base_iterator&>(left).operator==(static_cast<const base_iterator&>(right));
-                //return left.m_ptr == right.m_ptr && left.m_bucketOffset == right.m_bucketOffset;
         }
         
         inline friend bool operator!=(const const_iterator& left, const const_iterator& right) noexcept {
@@ -271,4 +270,4 @@ protected:
     void traverse() const noexcept;
 };
 
-#include "OrderedMutliSet.hpp"
+#include "OrderedMultiSet.hpp"
