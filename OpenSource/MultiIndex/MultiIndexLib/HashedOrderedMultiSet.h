@@ -21,22 +21,31 @@ public:
     using BaseType = HashedMultiSet<ThisType, Capacity, Iter, Pred>;
 
     template<typename I, typename K>
-    static
-    std::pair<I, I>
-    EqualKeys(const typename BaseType::Bucket& bucket, const K& key, const Pred& pred) noexcept;
+    static std::pair<I, I> EqualKeys(
+        const typename BaseType::Bucket& bucket,
+        const K& key,
+        const Pred& pred) noexcept;
     // inserts new key into bucket and keeps the same keys grouped (not sorted) within bucket.
-    static
-    std::pair<typename BaseType::iterator, bool>
-    BucketInsert(typename BaseType::Bucket& bucket, const Iter& key, const Pred& pred) noexcept;
+    static std::pair<typename BaseType::iterator, bool> BucketInsert(
+        typename BaseType::Bucket& bucket,
+        const Iter& key,
+        const Pred& pred) noexcept;
     
     template<typename I, typename K>
-    static I Find(const typename BaseType::Bucket& bucket, const K& key, const Pred& pred) noexcept;
+    static I Find(
+        const typename BaseType::Bucket& bucket,
+        const K& key,
+        const Pred& pred) noexcept;
+
+    template<typename K>
+    static bool IsEqual(const K& first, const K& second, const Pred& pred) noexcept;
+
 private:
     HashedOrderedMultiSet(const HashedOrderedMultiSet& src) noexcept = delete;
     HashedOrderedMultiSet(HashedOrderedMultiSet&&) noexcept = delete;
     
 protected:
-    HashedOrderedMultiSet(TupleParams<Pred>&& params) noexcept;
+    explicit HashedOrderedMultiSet(TupleParams<Pred>&& params) noexcept;
     ~HashedOrderedMultiSet() noexcept;
 };
 

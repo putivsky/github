@@ -37,24 +37,6 @@ typename OrderedMultiSet<Capacity, Iter, Pred>::BucketNode* OrderedMultiSet<Capa
 }
 
 template <uint32_t Capacity, typename Iter, typename Pred>
-/* static*/
-typename OrderedMultiSet<Capacity, Iter, Pred>::BucketNode* OrderedMultiSet<Capacity, Iter, Pred>::Max(BucketNode* x) noexcept {    // return rightmost node in subtree at x
-    while (!x->m_right->m_isNull) {
-        x = x->m_right;
-    }
-    return x;
-}
-
-template <uint32_t Capacity, typename Iter, typename Pred>
-/*static*/
-typename OrderedMultiSet<Capacity, Iter, Pred>::BucketNode* OrderedMultiSet<Capacity, Iter, Pred>::Min(BucketNode* x) noexcept {    // return leftmost node in subtree at x
-    while (!x->m_left->m_isNull) {
-        x = x->m_left;
-    }
-    return x;
-}
-
-template <uint32_t Capacity, typename Iter, typename Pred>
 void OrderedMultiSet<Capacity, Iter, Pred>::LRotate(BucketNode* w) const noexcept {
     BucketNode* x = w->m_right;
     w->m_right = x->m_left;
@@ -228,16 +210,6 @@ void OrderedMultiSet<Capacity, Iter, Pred>::Remove(BucketNode* z) noexcept {
 }
 
 template <uint32_t Capacity, typename Iter, typename Pred>
-/*static*/
-void OrderedMultiSet<Capacity, Iter, Pred>::Destroy(OrderedMultiSet<Capacity, Iter, Pred>::BucketNode* node) noexcept {
-    if (!node->m_isNull) {
-        Destroy(node->m_left);
-        Destroy(node->m_right);
-        delete node;
-    }
-}
-
-template <uint32_t Capacity, typename Iter, typename Pred>
 typename OrderedMultiSet<Capacity, Iter, Pred>::BucketNode* OrderedMultiSet<Capacity, Iter, Pred>::allocateNode() const {
     BucketNode* newNode = new BucketNode;
     newNode->m_left = HeadNode();
@@ -364,6 +336,34 @@ std::pair<I, I> OrderedMultiSet<Capacity, Iter, Pred>::EqualRange(const K& key) 
 }
 
 template <uint32_t Capacity, typename Iter, typename Pred>
+/* static*/
+typename OrderedMultiSet<Capacity, Iter, Pred>::BucketNode* OrderedMultiSet<Capacity, Iter, Pred>::Max(BucketNode* x) noexcept {    // return rightmost node in subtree at x
+    while (!x->m_right->m_isNull) {
+        x = x->m_right;
+    }
+    return x;
+}
+
+template <uint32_t Capacity, typename Iter, typename Pred>
+/*static*/
+typename OrderedMultiSet<Capacity, Iter, Pred>::BucketNode* OrderedMultiSet<Capacity, Iter, Pred>::Min(BucketNode* x) noexcept {    // return leftmost node in subtree at x
+    while (!x->m_left->m_isNull) {
+        x = x->m_left;
+    }
+    return x;
+}
+
+template <uint32_t Capacity, typename Iter, typename Pred>
+/*static*/
+void OrderedMultiSet<Capacity, Iter, Pred>::Destroy(OrderedMultiSet<Capacity, Iter, Pred>::BucketNode* node) noexcept {
+    if (!node->m_isNull) {
+        Destroy(node->m_left);
+        Destroy(node->m_right);
+        delete node;
+    }
+}
+
+template <uint32_t Capacity, typename Iter, typename Pred>
 template <typename I, typename K>
 std::pair<I, I>
 OrderedMultiSet<Capacity, Iter, Pred>::equal_range(const K& key) const noexcept {
@@ -382,6 +382,12 @@ I OrderedMultiSet<Capacity, Iter, Pred>::Find(const K& key) const noexcept {
 }
 
 template <uint32_t Capacity, typename Iter, typename Pred>
+template <typename K>
+bool OrderedMultiSet<Capacity, Iter, Pred>::is_equal(const K& first, const K& second) const noexcept {
+    return !m_compare(first, second) && !m_compare(second, first);
+}
+
+template <uint32_t Capacity, typename Iter, typename Pred>
 template <typename I, typename K>
 I
 OrderedMultiSet<Capacity, Iter, Pred>::find(const K& key) const noexcept {
@@ -390,7 +396,7 @@ OrderedMultiSet<Capacity, Iter, Pred>::find(const K& key) const noexcept {
 
 template <uint32_t Capacity, typename Iter, typename Pred>
 std::pair<typename OrderedMultiSet<Capacity, Iter, Pred>::iterator, bool>
-OrderedMultiSet<Capacity, Iter, Pred>::insert(const Iter& key) noexcept {
+OrderedMultiSet<Capacity, Iter, Pred>::insert(bool, const Iter& key) noexcept {
     // - Cases:
     // 1. Found a bucket where the new key can be inserted - no new bucket node or rebalnce is required
     // 2. Found a bucket where the new can supposed to be but bucket is full

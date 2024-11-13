@@ -121,13 +121,14 @@ class MultiIndexTable
         
         ItersContainer FindIterators(const T& where) const noexcept;
 
-        void Insert(const Iter& itRef, const BitRef affected) noexcept;
+        void Insert(bool noRehash, const Iter& itRef, const BitRef affected) noexcept;
         void Update(const Iter& itRef, const T& what, BitRef isAffected) noexcept;
         void Delete(const Iter& itRef) noexcept;
         std::optional<T> FindFirst(const T& what) const noexcept;
         ObjectContainer FindAll(const T& what) const noexcept;
+        // Type S should have: void operator()(const T& object)
         template<typename S>
-        void FindBySelector(const S& selector, const T& what) const noexcept;
+        void FindBySelector(S&& selector, const T& what) const noexcept;
         
         void Clear();
         void Traverse();
@@ -178,7 +179,8 @@ public:
     // operations - insert, update, delete, search.
     
     // Insert the new object and update all indexes.
-    void Insert(T&& obj) noexcept;
+    // Insert call may trigger the index rehash for the hashed indices unless noRehash is set to true
+    void Insert(bool noRehash, T&& obj) noexcept;
     // Update affected objects by index and update all indices
     template<size_t I>
     bool Update(const T& where, T&& what) noexcept;
@@ -195,7 +197,7 @@ public:
     ObjectContainer FindAll(const T& what) const noexcept;
     // Finds with selector - must have operator()(const T& item);
     template<size_t I, typename S>
-    void FindBySelector(const S& selector, const T& what) const noexcept;
+    void FindBySelector(S&& selector, const T& what) const noexcept;
     
     void Clear() noexcept;
     

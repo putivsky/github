@@ -199,9 +199,6 @@ public:
         }
     };
 
-protected:
-    const Pred& key_comp() const noexcept { return m_compare; }
-    
 private:
     BucketNode* allocateNode() const;
     void resetHead();
@@ -209,20 +206,21 @@ private:
     BucketNode*& RMost() const noexcept;
     BucketNode*& LMost() const noexcept;
     BucketNode* HeadNode() const noexcept;
-    static BucketNode* Max(BucketNode* x) noexcept;
-    static BucketNode* Min(BucketNode* x) noexcept;
     void LRotate(BucketNode* w) const noexcept;
     void RRotate(BucketNode* w) const noexcept;
     void Remove(BucketNode* z) noexcept;
-    static void Destroy(BucketNode* node) noexcept;
     template<typename K>
     iterator LowerBound(const K& key) const noexcept;
     template <typename K>
     iterator UpperBound(const K& key) const noexcept;
-    template< typename I, typename K>
+    template <typename I, typename K>
     I Find(const K& key) const noexcept;
-    template< typename I, typename K>
+    template <typename I, typename K>
     std::pair<I, I> EqualRange(const K& key) const noexcept;
+
+    static BucketNode* Max(BucketNode* x) noexcept;
+    static BucketNode* Min(BucketNode* x) noexcept;
+    static void Destroy(BucketNode* node) noexcept;
 
 private:
     
@@ -240,11 +238,14 @@ private:
     OrderedMultiSet(OrderedMultiSet&& src) noexcept = delete;
 
 protected:
-    OrderedMultiSet(TupleParams<Pred>&& params) noexcept;
+    explicit OrderedMultiSet(TupleParams<Pred>&& params) noexcept;
     ~OrderedMultiSet() noexcept;
  
+    template <typename K>
+    bool is_equal(const K& first, const K& second) const noexcept;
+
     // insert
-    std::pair<iterator, bool> insert(const Iter& key) noexcept;
+    std::pair<iterator, bool> insert(bool, const Iter& key) noexcept;
     
     // erase
     size_t erase(Iter key) noexcept;

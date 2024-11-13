@@ -39,9 +39,9 @@ MultiIndexTable<L, Capacity, T, P...>::CommonIndex<I, ARGS...>::FindIterators(co
 template<LockPolicy L, uint32_t Capacity, typename T, typename... P>
 template<typename I, typename... ARGS>
 void
-MultiIndexTable<L, Capacity, T, P...>::CommonIndex<I, ARGS...>::Insert(const Iter& itRef, const BitRef affected) noexcept {
+MultiIndexTable<L, Capacity, T, P...>::CommonIndex<I, ARGS...>::Insert(bool noRehash, const Iter& itRef, const BitRef affected) noexcept {
     if (affected) {
-        this->insert(itRef);
+        this->insert(noRehash, itRef);
     }
 }
 
@@ -52,11 +52,11 @@ MultiIndexTable<L, Capacity, T, P...>::CommonIndex<I, ARGS...>::Update(const Ite
     auto p = this->template equal_range<typename I::iterator>(*itRef);
     while (p.first != p.second) {
         if (*p.first == itRef) {
-            if (this->key_comp()(*itRef, what) || this->key_comp()(what, *itRef)) {
+            if (this->is_equal(*itRef, what)) {
+                isAffected = 0;
+            } else {
                 this->erase(*p.first);
                 isAffected = 1;
-            } else {
-                isAffected = 0;
             }
             
             return;
@@ -101,9 +101,7 @@ template<typename I, typename... ARGS>
 typename MultiIndexTable<L, Capacity, T, P...>::ObjectContainer
 MultiIndexTable<L, Capacity, T, P...>::CommonIndex<I, ARGS...>::FindAll(const T& what) const noexcept {
     ObjectContainer result;
-    FindBySelector([&result](const T& item) {
-        result.push_back(item);
-    }, what);
+    FindBySelector([&result](const T& item) { result.push_back(item); }, what);
     return result;
 }
 
@@ -111,7 +109,7 @@ template<LockPolicy L, uint32_t Capacity, typename T, typename... P>
 template<typename I, typename... ARGS>
 template<typename S>
 void
-MultiIndexTable<L, Capacity, T, P...>::CommonIndex<I, ARGS...>::FindBySelector(const S& selector, const T& what) const noexcept {
+MultiIndexTable<L, Capacity, T, P...>::CommonIndex<I, ARGS...>::FindBySelector(S&& selector, const T& what) const noexcept {
     auto p = this->template equal_range<typename I::const_iterator>(what);
     
     while (p.first != p.second) {
@@ -133,7 +131,8 @@ void
 MultiIndexTable<L, Capacity, T, P...>::CommonIndex<I, ARGS...>::Traverse() {
     this->traverse();
 }
-///////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////// MultiIndexTable
 template<LockPolicy L, uint32_t Capacity, typename T, typename... P>
 MultiIndexTable<L, Capacity, T, P...>::MultiIndexTable(size_t hashSize, float maxFactor, P&&... predicates) noexcept :
     m_IndexObjects(std::make_tuple(hashSize, maxFactor, std::forward<P>(predicates))...) {
@@ -150,14 +149,14 @@ MultiIndexTable<L, Capacity, T, P...>::~MultiIndexTable() noexcept {
 }
 
 template<LockPolicy L, uint32_t Capacity, typename T, typename... P>
-void MultiIndexTable<L, Capacity, T, P...>::Insert(T&& obj) noexcept {
+void MultiIndexTable<L, Capacity, T, P...>::Insert(bool noRehash, T&& obj) noexcept {
     // lock
     WriteLock<L> locker(m_mutex);
     auto iter = m_objects.insert(m_objects.end(), std::forward<T>(obj));
     std::bitset<sizeof...(P)> affectedIndices;
     affectedIndices.set();
     std::apply([&](auto&... idx) { // for all indexes
-        (idx.Insert(iter, affectedIndices[0]), ...);
+        (idx.Insert(noRehash, iter, affectedIndices[0]), ...);
     }, m_IndexObjects);
 }
 
@@ -188,7 +187,7 @@ bool MultiIndexTable<L, Capacity, T, P...>::Update(const T& where, T&& what) noe
         
         indexPos = 0;
         std::apply([&](auto&... idx) { // for all indexes
-            (idx.Insert(iter, affectediIndices[indexPos++]), ...);
+            (idx.Insert(true, iter, affectediIndices[indexPos++]), ...);
         }, m_IndexObjects);
     }
     
@@ -246,13 +245,13 @@ typename MultiIndexTable<L, Capacity, T, P...>::ObjectContainer MultiIndexTable<
 
 template<LockPolicy L, uint32_t Capacity, typename T, typename... P>
 template<size_t I, typename S>
-void MultiIndexTable<L, Capacity, T, P...>::FindBySelector(const S& selector, const T& what) const noexcept {
+void MultiIndexTable<L, Capacity, T, P...>::FindBySelector(S&& selector, const T& what) const noexcept {
     static_assert(I < sizeof...(P), "Index is out of range");
     // find value by index
     auto& idx = std::get<I>(m_IndexObjects);
     // lock
     ReadLock<L> locker(m_mutex);
-    return idx.FindAll(what);
+    idx.FindBySelector(std::forward<S>(selector), what);
 }
 
 template<LockPolicy L, uint32_t Capacity, typename T, typename... P>

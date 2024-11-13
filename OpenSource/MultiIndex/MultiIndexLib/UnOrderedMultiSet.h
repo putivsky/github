@@ -21,15 +21,13 @@ public:
     using BaseType = HashedMultiSet<ThisType, Capacity, Iter, Pred>;
 
     template<typename I, typename K>
-    static std::pair<I, I>
-    EqualKeys(
+    static std::pair<I, I> EqualKeys(
         const typename BaseType::Bucket& bucket,
         const K& key,
         const Pred& pred) noexcept;
     // inserts new key into bucket and keeps the same keys grouped (not sorted) within bucket.
     static
-    std::pair<typename BaseType::iterator, bool>
-    BucketInsert(
+    std::pair<typename BaseType::iterator, bool> BucketInsert(
         typename BaseType::Bucket& bucket,
         const Iter& key,
         const Pred& pred) noexcept;
@@ -39,8 +37,11 @@ public:
         const K& key,
         const Pred& pred) noexcept;
 
+    template<typename K>
+    static bool IsEqual(const K& first, const K& second, const Pred& pred) noexcept;
+
 private:
-    UnOrderedMultiSet(const UnOrderedMultiSet& src) noexcept = delete;
+    explicit UnOrderedMultiSet(const UnOrderedMultiSet& src) noexcept = delete;
     UnOrderedMultiSet(UnOrderedMultiSet&&) noexcept = delete;
     
 protected:

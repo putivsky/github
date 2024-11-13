@@ -50,13 +50,14 @@ protected:
     HashedMultiSet(HashedMultiSet&&) noexcept = delete;
     
 protected:
-    HashedMultiSet(TupleParams<Pred>&& params) noexcept;
+    explicit HashedMultiSet(TupleParams<Pred>&& params) noexcept;
     ~HashedMultiSet() noexcept;
     
-    const Pred& key_comp() const noexcept { return m_compare; }
-    
-    // insert
-    std::pair<iterator, bool> insert(const Iter& key) noexcept;
+    // equal_range
+    template<typename K>
+    bool is_equal(const K& first, const K& second) const noexcept;
+
+    std::pair<iterator, bool> insert(bool noRehash, const Iter& key) noexcept;
     
     // erase
     size_t erase(Iter key) noexcept;

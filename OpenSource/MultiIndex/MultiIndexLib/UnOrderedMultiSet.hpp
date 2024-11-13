@@ -47,6 +47,13 @@ UnOrderedMultiSet<Capacity, Iter, Pred>::Find(const typename BaseType::Bucket& b
 }
 
 template <uint32_t Capacity, typename Iter, typename Pred>
+template<typename K>
+/*static*/
+bool UnOrderedMultiSet<Capacity, Iter, Pred>::IsEqual(const K& first, const K& second, const Pred& pred) noexcept {
+    return pred(first, second);
+}
+
+template <uint32_t Capacity, typename Iter, typename Pred>
 std::pair<typename UnOrderedMultiSet<Capacity, Iter, Pred>::BaseType::iterator, bool>
 UnOrderedMultiSet<Capacity, Iter, Pred>::BucketInsert(typename BaseType::Bucket& bucket, const Iter& key, const Pred& pred) noexcept {
     if (bucket.m_head == nullptr) {

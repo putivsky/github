@@ -31,15 +31,22 @@ template<typename I, typename K>
 /*static*/
 I HashedOrderedMultiSet<Capacity, Iter, Pred>::Find(const typename BaseType::Bucket& bucket, const K& key, const Pred& pred) noexcept {
     auto ptr = std::lower_bound(bucket.m_head, bucket.m_head + bucket.m_size, key,
-                                   [&pred](const Iter& first, const Iter& second) -> bool {
-           return pred(*first, *second);
+                                   [&pred](const Iter& first, const K& second) -> bool {
+           return pred(*first, second);
        });
 
-    if (ptr != bucket.head + bucket.m_size && !pred(key, **ptr) && !pred(**ptr, key)) {
+    if (ptr != bucket.m_head + bucket.m_size && !pred(key, **ptr) && !pred(**ptr, key)) {
         return ptr;
     }
     
     return BaseType::template end<I>();
+}
+
+template <uint32_t Capacity, typename Iter, typename Pred>
+template<typename K>
+/*static*/
+bool HashedOrderedMultiSet<Capacity, Iter, Pred>::IsEqual(const K& first, const K& second, const Pred& pred) noexcept {
+    return !pred(first, second) && !pred(second, first);
 }
 
 template <uint32_t Capacity, typename Iter, typename Pred>

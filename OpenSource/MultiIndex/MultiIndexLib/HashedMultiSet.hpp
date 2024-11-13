@@ -50,9 +50,15 @@ void HashedMultiSet<D, Capacity, Iter, Pred>::Rehash(size_t count) noexcept {
 }
 
 template <typename D, uint32_t Capacity, typename Iter, typename Pred>
+template<typename K>
+bool HashedMultiSet<D, Capacity, Iter, Pred>::is_equal(const K& first, const K& second) const noexcept {
+    return D::template IsEqual<K>(first, second, m_compare);
+}
+
+template <typename D, uint32_t Capacity, typename Iter, typename Pred>
 std::pair<typename HashedMultiSet<D, Capacity, Iter, Pred>::iterator, bool>
-HashedMultiSet<D, Capacity, Iter, Pred>::insert(const Iter& key) noexcept {
-    if (float(m_totalItems) / m_table.size() > m_settings.maxLoadFactor) {
+HashedMultiSet<D, Capacity, Iter, Pred>::insert(bool noRehash, const Iter& key) noexcept {
+    if (!noRehash && float(m_totalItems) / m_table.size() > m_settings.maxLoadFactor) {
         Rehash(m_table.size() * 2 + 1);
     }
 
