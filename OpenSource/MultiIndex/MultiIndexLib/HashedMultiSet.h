@@ -38,8 +38,15 @@ protected:
     using BucketTable = std::vector<Bucket>;
     // rehash the table
     void Rehash(size_t count) noexcept;
+
+    inline static std::pair<iterator, bool> Insert(Bucket& bucket, const Iter& key, const Pred& pred) noexcept;
+
+    template<typename I, typename K>
+    inline static I Find(const Bucket& bucket, const K& key, const Pred& pred) noexcept;
+    
     // clear table
     static void ClearTable(BucketTable& table);
+    
 
     const HashedMultiSetSettings m_settings;
     const Pred m_compare; // hasher & equal operators

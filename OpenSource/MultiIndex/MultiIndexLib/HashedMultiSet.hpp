@@ -36,7 +36,7 @@ void HashedMultiSet<D, Capacity, Iter, Pred>::Rehash(size_t count) noexcept {
     // copy items
     for (auto& item : m_table) {
         for (size_t i = 0; i < item.m_size; ++i) {
-            auto p = D::BucketInsert(table[m_compare(*item.m_head[i]) % table.size()], item.m_head[i], m_compare);
+            auto p = Insert(table[m_compare(*item.m_head[i]) % table.size()], item.m_head[i], m_compare);
             if (!p.second) { // memory
                 ClearTable(table);
                 return;
@@ -50,6 +50,52 @@ void HashedMultiSet<D, Capacity, Iter, Pred>::Rehash(size_t count) noexcept {
 }
 
 template <typename D, uint32_t Capacity, typename Iter, typename Pred>
+std::pair<typename HashedMultiSet<D, Capacity, Iter, Pred>::iterator, bool>
+HashedMultiSet<D, Capacity, Iter, Pred>::Insert(Bucket& bucket, const Iter& key, const Pred& pred) noexcept {
+    if (bucket.m_head == nullptr) {
+        bucket.m_capacity = Capacity;
+        bucket.m_head = (Iter*)::malloc(bucket.m_capacity * sizeof(Iter));
+        bucket.m_size = 0;
+    } else if (bucket.m_capacity == bucket.m_size) {
+        bucket.m_capacity = bucket.m_size * 2;
+        auto* memPrt = (Iter*)::realloc(bucket.m_head, bucket.m_capacity * sizeof(Iter));
+        // TODO - allocation failure
+        if (memPrt == nullptr) {
+            return {nullptr, false};
+        }
+        
+        bucket.m_head = memPrt;
+    }
+    
+    // find the first the same key, if any
+    auto ptr = D::template LowerBound<iterator>(bucket, *key, pred);
+
+    if (ptr != bucket.m_head + bucket.m_size) {
+        // make a room
+        memmove(ptr + 1, ptr, sizeof(Iter) * (bucket.m_size - (ptr - bucket.m_head)));
+    }
+    
+    memcpy(ptr, &key, sizeof(key));
+    ++bucket.m_size;
+        
+    return {ptr, true};
+}
+
+template <typename D, uint32_t Capacity, typename Iter, typename Pred>
+template<typename I, typename K>
+/*static*/
+I HashedMultiSet<D, Capacity, Iter, Pred>::Find(const Bucket& bucket, const K& key, const Pred& pred) noexcept {
+    auto ptr = D::template LowerBound<I>(bucket, key, pred);
+    
+    if (ptr != bucket.m_head + bucket.m_size && D::template IsEqual<K>(key, **ptr, pred)) {
+        return ptr;
+    }
+    
+    return end<I>();
+}
+
+//////////////////////////////
+template <typename D, uint32_t Capacity, typename Iter, typename Pred>
 template<typename K>
 bool HashedMultiSet<D, Capacity, Iter, Pred>::is_equal(const K& first, const K& second) const noexcept {
     return D::template IsEqual<K>(first, second, m_compare);
@@ -62,10 +108,11 @@ HashedMultiSet<D, Capacity, Iter, Pred>::insert(bool noRehash, const Iter& key) 
         Rehash(m_table.size() * 2 + 1);
     }
 
-    auto p = D::BucketInsert(m_table[m_compare(*key) % m_table.size()], key, m_compare);
+    auto p = Insert(m_table[m_compare(*key) % m_table.size()], key, m_compare);
     if (p.second) {
         ++m_totalItems;
     }
+    
     return p;
 }
 
