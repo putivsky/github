@@ -30,7 +30,7 @@ using TupleParams = std::tuple<size_t, float, Pred>;
 
 enum class LockPolicy {
     Internal = 0, // API takes care the proper read/write locking
-    External // caller should properly orginize access to the API in multi-threaded environment.
+    External // caller should properly organize access to the API in multi-threaded environment.
 };
 
 template<LockPolicy>
@@ -113,10 +113,10 @@ class MultiIndexTable
     template<typename I, typename... ARGS>
     class CommonIndex : public I {
         CommonIndex(const CommonIndex& src) noexcept = delete;
+        CommonIndex(CommonIndex&& src) noexcept = delete;
     public:
  
         CommonIndex(ARGS&&... args) noexcept;
-        CommonIndex(CommonIndex&& src) noexcept;
         ~CommonIndex() noexcept;
         
         ItersContainer FindIterators(const T& where) const noexcept;

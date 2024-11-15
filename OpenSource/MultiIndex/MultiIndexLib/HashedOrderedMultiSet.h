@@ -10,7 +10,7 @@
 #include "HashedMultiSet.h"
 
 // Index keeps list<Key>::iterator(s), which are essentially pointers
-// therfore index nodes should be small in size, ideally just packed arrays of iterators
+// therefore index nodes should be small in size, ideally just packed arrays of iterators
 // to reduce the memory usage overhead.
 // [0][1][2]...[M] - buckets
 // [0] -> [0][1][2]...[N] - array of iterators ordered by keys
@@ -20,14 +20,14 @@ public:
     using ThisType = HashedOrderedMultiSet<Capacity, Iter, Pred>;
     using BaseType = HashedMultiSet<ThisType, Capacity, Iter, Pred>;
 
-    template<typename I, typename K>
+    template <typename I, typename K>
     inline static std::pair<I, I> EqualKeys(
         const typename BaseType::Bucket& bucket,
         const K& key,
         const Pred& pred) noexcept;
 
-    template<typename I, typename K>
-    inline static I LowerBound(
+    template <typename I, typename K>
+    inline static I LowerInBucket(
         const typename BaseType::Bucket& bucket,
         const K& key,
         const Pred& pred) noexcept;
@@ -41,7 +41,6 @@ private:
     
 protected:
     explicit HashedOrderedMultiSet(TupleParams<Pred>&& params) noexcept;
-    ~HashedOrderedMultiSet() noexcept;
 };
 
 #include "HashedOrderedMultiSet.hpp"

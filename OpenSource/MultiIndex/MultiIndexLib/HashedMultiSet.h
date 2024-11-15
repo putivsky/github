@@ -18,7 +18,7 @@ struct HashedMultiSetSettings {
 };
 
 // Index keeps list<Key>::iterator(s), which are essentially pointers
-// therfore index nodes should be small in size, ideally just packed arrays of iterators
+// therefore index nodes should be small in size, ideally just packed arrays of iterators
 // to reduce the memory usage overhead.
 // [0][1][2]...[M] - buckets
 // [0] -> [0][1][2]...[N] - array of iterators ordered by derived class
@@ -39,10 +39,7 @@ protected:
     // rehash the table
     void Rehash(size_t count) noexcept;
 
-    inline static std::pair<iterator, bool> Insert(Bucket& bucket, const Iter& key, const Pred& pred) noexcept;
-
-    template<typename I, typename K>
-    inline static I Find(const Bucket& bucket, const K& key, const Pred& pred) noexcept;
+    inline static bool Insert(Bucket& bucket, const Iter& key, const Pred& pred) noexcept;
     
     // clear table
     static void ClearTable(BucketTable& table);
@@ -61,24 +58,23 @@ protected:
     ~HashedMultiSet() noexcept;
     
     // equal_range
-    template<typename K>
+    template <typename K>
     bool is_equal(const K& first, const K& second) const noexcept;
 
-    std::pair<iterator, bool> insert(bool noRehash, const Iter& key) noexcept;
+    bool insert(bool noRehash, const Iter& key) noexcept;
     
     // erase
     size_t erase(Iter key) noexcept;
     
     // equal_range
-    template<typename I, typename K>
-    std::pair<I, I> equal_range(const K& key) const noexcept;
+    template <typename K>
+    std::pair<const_iterator, const_iterator> equal_range(const K& key) const noexcept;
 
     // find the first item by the key.
-    template<typename I, typename K>
-    I find(const K& key) const noexcept;
+    template <typename K>
+    const_iterator find(const K& key) const noexcept;
     
-    template<typename I>
-    static I end() noexcept { return nullptr; }
+    static const_iterator end() noexcept { return nullptr; }
     
     // clear
     void clear() noexcept;

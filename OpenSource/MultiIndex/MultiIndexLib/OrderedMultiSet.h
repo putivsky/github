@@ -13,7 +13,7 @@
 #define assertm(exp, msg) assert(((void)msg, exp))
 
 // Index keeps list<Key>::iterator(s), which are essentially pointers
-// therfore index nodes should be small in size, ideally just packed arrays of iterators
+// therefore index nodes should be small in size, ideally just packed arrays of iterators
 // to reduce the memory usage overhead.
 // [0][1][2]...[M] - binary tree
 // [0] -> [0][1][2]...[N] - array of iterators sorted by keys
@@ -34,20 +34,14 @@ class OrderedMultiSet {
     };
 
 public:
-    class const_iterator;
-    class iterator;
-
-    class base_iterator {
-        friend class const_iterator;
-        friend class iterator;
-
-        BucketNode* m_ptr{nullptr};
+    class const_iterator {
+        const BucketNode* m_ptr{nullptr};
         size_t m_bucketOffset{0};
 
-        explicit base_iterator(BucketNode* ptr, size_t bucketOffset) noexcept : m_ptr(ptr), m_bucketOffset(bucketOffset) {}
+    public:
+        const_iterator(const BucketNode* ptr, size_t bucketOffset) noexcept : m_ptr(ptr), m_bucketOffset(bucketOffset) {}
 
-        template<typename I>
-        inline I& operator++() noexcept {
+        inline const_iterator& operator++() noexcept {
             if (!m_ptr->m_isNull) {
                 if (m_bucketOffset + 1 < m_ptr->m_bucket.m_size) {
                     // move offset
@@ -66,18 +60,16 @@ public:
                 }
             }
             
-            return static_cast<I&>(*this);
+            return *this;
         }
         
-        template<typename I>
-        inline I operator++(int) noexcept {
-            I tmp(*this);
+        inline const_iterator operator++(int) noexcept {
+            const_iterator tmp(*this);
             ++(*this);
             return tmp;
         }
 
-        template<typename I>
-        inline I& operator--() noexcept {
+        inline const_iterator& operator--() noexcept {
             if (m_bucketOffset > 0) {
                 // retreat offset
                 --m_bucketOffset;
@@ -100,123 +92,45 @@ public:
                 }
             }
             
-            return static_cast<I&>(*this);
+            return *this;
         }
         
-        template<typename I>
-        inline I operator--(int) noexcept {
-            I tmp(*this);
+        inline const_iterator operator--(int) noexcept {
+            const_iterator tmp(*this);
             --(*this);
             return tmp;
         }
 
-    public:
-        inline Iter& operator*() noexcept {
-            return this->m_ptr->m_bucket.m_head[this->m_bucketOffset];
+        inline Iter& operator*() const noexcept {
+            return GetNodePtr()->m_bucket.m_head[m_bucketOffset];
         }
         
-        inline Iter* operator->() noexcept {
-            return m_ptr->m_bucket.m_head + this->m_bucketOffset;
-        }
-        
-        inline const Iter& operator*() const noexcept {
-            return m_ptr->m_bucket.m_head[this->m_bucketOffset];
-        }
-        
-        inline const Iter* operator->() const noexcept {
-            return m_ptr->m_bucket.m_head + this->m_bucketOffset;
+        inline Iter* operator->() const noexcept {
+            return GetNodePtr()->m_bucket.m_head + m_bucketOffset;
         }
 
-        inline BucketNode* GetNodePtr() const { return m_ptr; }
         inline size_t GetOffset() const { return m_bucketOffset; }
+        inline BucketNode* GetNodePtr() const { return const_cast<BucketNode*>(m_ptr); }
 
-        inline bool operator==(const base_iterator& right) const noexcept {
+        inline bool operator==(const const_iterator& right) const noexcept {
             return m_ptr == right.m_ptr && m_bucketOffset == right.m_bucketOffset;
         }
 
-        inline bool operator!=(const base_iterator& right) const noexcept {
+        inline bool operator!=(const const_iterator& right) const noexcept {
             return !(*this == right);
-        }
-    };
-    
-    class iterator : public base_iterator {
-    public:
-        explicit iterator(BucketNode* ptr, size_t bucketOffset) noexcept : base_iterator(ptr, bucketOffset) {}
-
-        inline iterator& operator++() noexcept {
-            return base_iterator::template operator++<iterator>();
-        }
-        
-        inline iterator operator++(int) noexcept {
-            return base_iterator::template operator++<iterator>(0);
-        }
-
-        inline iterator& operator--() noexcept {
-            return base_iterator::template operator--<iterator>();
-        }
-        
-        inline iterator operator--(int) noexcept {
-            return base_iterator::template operator--<iterator>(0);
-        }
-
-        inline friend bool operator==(const iterator& left, const iterator& right) noexcept {
-            return static_cast<const base_iterator&>(left).operator==(static_cast<const base_iterator&>(right));
-        }
-        
-        inline friend bool operator!=(const iterator& left, const iterator& right) noexcept {
-          return !(left == right);
-        }
-    };
-    
-    class const_iterator : public iterator {
-    public:
-        explicit const_iterator(BucketNode* ptr, size_t bucketOffset) noexcept : iterator(ptr, bucketOffset) {}
-
-        const_iterator(iterator it) noexcept : iterator(it.m_ptr, it.m_bucketOffset) {}
-
-        inline const_iterator& operator++() noexcept {
-            return base_iterator::template operator++<const_iterator>();
-        }
-        
-        inline const_iterator operator++(int) noexcept {
-            return base_iterator::template operator++<const_iterator>(0);
-        }
-
-        inline const_iterator& operator--() noexcept {
-            return base_iterator::template operator--<const_iterator>();
-        }
-        
-        inline const_iterator operator--(int) noexcept {
-            return base_iterator::template operator--<const_iterator>(0);
-        }
-
-        inline friend bool operator==(const const_iterator& left, const const_iterator& right) noexcept {
-            return static_cast<const base_iterator&>(left).operator==(static_cast<const base_iterator&>(right));
-        }
-        
-        inline friend bool operator!=(const const_iterator& left, const const_iterator& right) noexcept {
-            return !(left == right);
         }
     };
 
 private:
-    BucketNode* allocateNode() const;
+    BucketNode* allocateNode();
     void resetHead();
-    BucketNode*& Root() const noexcept ;
-    BucketNode*& RMost() const noexcept;
-    BucketNode*& LMost() const noexcept;
     BucketNode* HeadNode() const noexcept;
-    void LRotate(BucketNode* w) const noexcept;
-    void RRotate(BucketNode* w) const noexcept;
+    BucketNode*& Root() const noexcept ;
+    BucketNode*& RMost() noexcept;
+    BucketNode*& LMost() noexcept;
+    void LRotate(BucketNode* w) noexcept;
+    void RRotate(BucketNode* w) noexcept;
     void Remove(BucketNode* z) noexcept;
-    template<typename K>
-    iterator LowerBound(const K& key) const noexcept;
-    template <typename K>
-    iterator UpperBound(const K& key) const noexcept;
-    template <typename I, typename K>
-    I Find(const K& key) const noexcept;
-    template <typename I, typename K>
-    std::pair<I, I> EqualRange(const K& key) const noexcept;
 
     static BucketNode* Max(BucketNode* x) noexcept;
     static BucketNode* Min(BucketNode* x) noexcept;
@@ -245,24 +159,22 @@ protected:
     bool is_equal(const K& first, const K& second) const noexcept;
 
     // insert
-    std::pair<iterator, bool> insert(bool, const Iter& key) noexcept;
+    bool insert(bool, const Iter& key) noexcept;
     
     // erase
     size_t erase(Iter key) noexcept;
     
     // const version equal_range
-    template<typename I, typename K>
-    std::pair<I, I> equal_range(const K& key) const noexcept;
+    template <typename K>
+    std::pair<const_iterator, const_iterator> equal_range(const K& key) const noexcept;
 
     // find the first item by the key.
-    template<typename I, typename K>
-    I find(const K& key) const noexcept;
+    template <typename K>
+    const_iterator find(const K& key) const noexcept;
 
-    template<typename I>
-    I begin() const noexcept { return I(LMost(), 0); }
+    const_iterator begin() const noexcept { return const_iterator(LMost(), 0); }
 
-    template<typename I>
-    I end() const noexcept { return I(HeadNode(), 0); }
+    const_iterator end() const noexcept { return const_iterator(HeadNode(), 0); }
     
     // clear
     void clear() noexcept;

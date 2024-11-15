@@ -17,27 +17,27 @@ OrderedMultiSet<Capacity, Iter, Pred>::~OrderedMultiSet() noexcept {
 }
 
 template <uint32_t Capacity, typename Iter, typename Pred>
+typename OrderedMultiSet<Capacity, Iter, Pred>::BucketNode* OrderedMultiSet<Capacity, Iter, Pred>::HeadNode() const noexcept {
+    return const_cast<BucketNode*>(&m_headNode);
+}
+
+template <uint32_t Capacity, typename Iter, typename Pred>
 typename OrderedMultiSet<Capacity, Iter, Pred>::BucketNode*& OrderedMultiSet<Capacity, Iter, Pred>::Root() const noexcept {
     return const_cast<BucketNode*&>(m_headNode.m_parent);
 }
 
 template <uint32_t Capacity, typename Iter, typename Pred>
-typename OrderedMultiSet<Capacity, Iter, Pred>::BucketNode*& OrderedMultiSet<Capacity, Iter, Pred>::RMost() const noexcept { // return rightmost node in nonmutable tree
-    return const_cast<BucketNode*&>(m_headNode.m_right);
+typename OrderedMultiSet<Capacity, Iter, Pred>::BucketNode*& OrderedMultiSet<Capacity, Iter, Pred>::RMost() noexcept { // return rightmost node in non-mutable tree
+    return m_headNode.m_right;
 }
 
 template <uint32_t Capacity, typename Iter, typename Pred>
-typename OrderedMultiSet<Capacity, Iter, Pred>::BucketNode*& OrderedMultiSet<Capacity, Iter, Pred>::LMost() const noexcept { // return leftmost node in nonmutable tree
-    return const_cast<BucketNode*&>(m_headNode.m_left);
+typename OrderedMultiSet<Capacity, Iter, Pred>::BucketNode*& OrderedMultiSet<Capacity, Iter, Pred>::LMost() noexcept { // return leftmost node in non-mutable tree
+    return m_headNode.m_left;
 }
 
 template <uint32_t Capacity, typename Iter, typename Pred>
-typename OrderedMultiSet<Capacity, Iter, Pred>::BucketNode* OrderedMultiSet<Capacity, Iter, Pred>::HeadNode() const noexcept {
-    return const_cast<BucketNode*>(reinterpret_cast<const BucketNode*>(&m_headNode));
-}
-
-template <uint32_t Capacity, typename Iter, typename Pred>
-void OrderedMultiSet<Capacity, Iter, Pred>::LRotate(BucketNode* w) const noexcept {
+void OrderedMultiSet<Capacity, Iter, Pred>::LRotate(BucketNode* w) noexcept {
     BucketNode* x = w->m_right;
     w->m_right = x->m_left;
     if (!x->m_left->m_isNull) {
@@ -57,7 +57,7 @@ void OrderedMultiSet<Capacity, Iter, Pred>::LRotate(BucketNode* w) const noexcep
 }
 
 template <uint32_t Capacity, typename Iter, typename Pred>
-void OrderedMultiSet<Capacity, Iter, Pred>::RRotate(BucketNode* w) const noexcept {
+void OrderedMultiSet<Capacity, Iter, Pred>::RRotate(BucketNode* w) noexcept {
     BucketNode* x = w->m_left;
     w->m_left = x->m_right;
     if (!x->m_right->m_isNull) {
@@ -78,58 +78,58 @@ void OrderedMultiSet<Capacity, Iter, Pred>::RRotate(BucketNode* w) const noexcep
     
 template <uint32_t Capacity, typename Iter, typename Pred>
 void OrderedMultiSet<Capacity, Iter, Pred>::Remove(BucketNode* z) noexcept {
-    BucketNode* rcolorNode;    // the node to recolor as needed
-    BucketNode* rcolorNodeParent;    // parent of rcolorNode (which may be nil)
+    BucketNode* r;        // the node to recolor as needed
+    BucketNode* rParent;  // parent of r (which may be nil)
     BucketNode* x = z;
     
     if (x->m_left->m_isNull) {
-        rcolorNode = x->m_right;    // stitch up right subtree
+        r = x->m_right;    // stitch up right subtree
     } else if (x->m_right->m_isNull) {
-        rcolorNode = x->m_left;    // stitch up left subtree
+        r = x->m_left;    // stitch up left subtree
     } else {    // two subtrees, must lift successor node to replace erased
-        iterator next(z, z->m_bucket.m_size - 1);
+        const_iterator next(z, z->m_bucket.m_size - 1);
         ++next;
         x = next.GetNodePtr();    // x is successor node
-        rcolorNode = x->m_right;    // rcolorNode is only subtree
+        r = x->m_right;    // r is only subtree
     }
     
     if (x == z) {    // at most one subtree, relink it
-        rcolorNodeParent = z->m_parent;
-        if (!rcolorNode->m_isNull) {
-            rcolorNode->m_parent = rcolorNodeParent;    // link up
+        rParent = z->m_parent;
+        if (!r->m_isNull) {
+            r->m_parent = rParent;    // link up
         }
         
         if (Root() == z) {
-            Root() = rcolorNode;    // link down from root
-        } else if (rcolorNodeParent->m_left == z) {
-            rcolorNodeParent->m_left = rcolorNode;    // link down to left
+            Root() = r;    // link down from root
+        } else if (rParent->m_left == z) {
+            rParent->m_left = r;    // link down to left
         } else {
-            rcolorNodeParent->m_right = rcolorNode;    // link down to right
+            rParent->m_right = r;    // link down to right
         }
         
         if (LMost() == z) {
-            LMost() = rcolorNode->m_isNull
-            ? rcolorNodeParent    // smallest is parent of erased node
-            : Min(rcolorNode);    // smallest in relinked subtree
+            LMost() = r->m_isNull
+            ? rParent    // smallest is parent of erased node
+            : Min(r);    // smallest in relinked subtree
         }
         
         if (RMost() == z) {
-            RMost() = rcolorNode->m_isNull
-            ? rcolorNodeParent    // largest is parent of erased node
-            : Max(rcolorNode);    // largest in relinked subtree
+            RMost() = r->m_isNull
+            ? rParent    // largest is parent of erased node
+            : Max(r);    // largest in relinked subtree
         }
-    } else {    // erased has two subtrees, _Pnode is successor to erased
+    } else {    // erased has two subtrees, x is successor to erased
         z->m_left->m_parent = x; // link left up
         x->m_left = z->m_left; // link successor down
 
         if (x == z->m_right) {
-            rcolorNodeParent = x;    // successor is next to erased
+            rParent = x;    // successor is next to erased
         } else {    // successor further down, link in place of erased
-            rcolorNodeParent = x->m_parent;
-            if (!rcolorNode->m_isNull) {
-                rcolorNode->m_parent = rcolorNodeParent;    // link fix up
+            rParent = x->m_parent;
+            if (!r->m_isNull) {
+                r->m_parent = rParent;    // link fix up
             }
-            rcolorNodeParent->m_left = rcolorNode;    // link fix down
+            rParent->m_left = r;    // link fix down
             x->m_right = z->m_right;
             z->m_right->m_parent = x; // right up
         }
@@ -147,70 +147,70 @@ void OrderedMultiSet<Capacity, Iter, Pred>::Remove(BucketNode* z) noexcept {
     }
 
     if (z->m_isBlack) {    // erasing black link, must recolor/rebalance tree
-        for (; rcolorNode != Root() && rcolorNode->m_isBlack; rcolorNodeParent = rcolorNode->m_parent) {
-            if (rcolorNode == rcolorNodeParent->m_left) {    // fixup left subtree
-                x = rcolorNodeParent->m_right;
+        for (; r != Root() && r->m_isBlack; rParent = r->m_parent) {
+            if (r == rParent->m_left) {    // fixup left subtree
+                x = rParent->m_right;
                 if (!x->m_isBlack) {    // rotate red up from right subtree
                     x->m_isBlack = true;
-                    rcolorNodeParent->m_isBlack = false;
-                    LRotate(rcolorNodeParent);
-                    x = rcolorNodeParent->m_right;
+                    rParent->m_isBlack = false;
+                    LRotate(rParent);
+                    x = rParent->m_right;
                 }
                 
                 if (x->m_isNull) {
-                    rcolorNode = rcolorNodeParent;    // shouldn't happen
+                    r = rParent;    // shouldn't happen
                 } else if (x->m_left->m_isBlack && x->m_right->m_isBlack) {    // redden right subtree with black children
                     x->m_isBlack = false;
-                    rcolorNode = rcolorNodeParent;
+                    r = rParent;
                 } else {    // must rearrange right subtree
                     if (x->m_right->m_isBlack) {    // rotate red up from left sub-subtree
                         x->m_left->m_isBlack = true;
                         x->m_isBlack = false;
                         RRotate(x);
-                        x= rcolorNodeParent->m_right;
+                        x= rParent->m_right;
                     }
                     
-                    x->m_isBlack = rcolorNodeParent->m_isBlack;
-                    rcolorNodeParent->m_isBlack = true;
+                    x->m_isBlack = rParent->m_isBlack;
+                    rParent->m_isBlack = true;
                     x->m_right->m_isBlack = true;
-                    LRotate(rcolorNodeParent);
+                    LRotate(rParent);
                     break;    // tree now recolored/rebalanced
                 }
             } else {    // fixup right subtree
-                x = rcolorNodeParent->m_left;
+                x = rParent->m_left;
                 if (!x->m_isBlack) {    // rotate red up from left subtree
                     x->m_isBlack = true;
-                    rcolorNodeParent->m_isBlack = false;
-                    RRotate(rcolorNodeParent);
-                    x = rcolorNodeParent->m_left;
+                    rParent->m_isBlack = false;
+                    RRotate(rParent);
+                    x = rParent->m_left;
                 }
                 if (x->m_isNull) {
-                    rcolorNode = rcolorNodeParent;    // shouldn't happen
+                    r = rParent;    // shouldn't happen
                 } else if (x->m_right->m_isBlack && x->m_left->m_isBlack) {    // redden left subtree with black children
                     x->m_isBlack = false;
-                    rcolorNode = rcolorNodeParent;
+                    r = rParent;
                 } else {    // must rearrange left subtree
                     if (x->m_left->m_isBlack) {    // rotate red up from right sub-subtree
                         x->m_right->m_isBlack = true;
                         x->m_isBlack = false;
                         LRotate(x);
-                        x = rcolorNodeParent->m_left;
+                        x = rParent->m_left;
                     }
                     
-                    x->m_isBlack = rcolorNodeParent->m_isBlack;
-                    rcolorNodeParent->m_isBlack = true;
+                    x->m_isBlack = rParent->m_isBlack;
+                    rParent->m_isBlack = true;
                     x->m_left->m_isBlack = true;
-                    RRotate(rcolorNodeParent);
+                    RRotate(rParent);
                     break;    // tree now recolored/rebalanced
                 }
             }
         }
-        rcolorNode->m_isBlack = true;
+        r->m_isBlack = true;
     }
 }
 
 template <uint32_t Capacity, typename Iter, typename Pred>
-typename OrderedMultiSet<Capacity, Iter, Pred>::BucketNode* OrderedMultiSet<Capacity, Iter, Pred>::allocateNode() const {
+typename OrderedMultiSet<Capacity, Iter, Pred>::BucketNode* OrderedMultiSet<Capacity, Iter, Pred>::allocateNode() {
     BucketNode* newNode = new BucketNode;
     newNode->m_left = HeadNode();
     newNode->m_right = HeadNode();
@@ -227,112 +227,6 @@ void OrderedMultiSet<Capacity, Iter, Pred>::resetHead() {
     m_headNode.m_right = &m_headNode;
     m_headNode.m_isBlack = true;
     m_headNode.m_isNull = true;
-}
-
-template <uint32_t Capacity, typename Iter, typename Pred>
-template<typename K>
-typename OrderedMultiSet<Capacity, Iter, Pred>::iterator OrderedMultiSet<Capacity, Iter, Pred>::LowerBound(const K& key) const noexcept {
-    BucketNode* x = Root();
-    BucketNode* w = HeadNode();
-
-    while (!x->m_isNull) {
-        if (m_compare(*x->m_bucket.m_head[x->m_bucket.m_size - 1], key)) {
-            x = x->m_right;    // descend right subtree
-        } else { // x not less than key, remember it
-            w = x;
-            x = x->m_left;    // descend left subtree
-        }
-    }
-    
-    size_t offset = 0;
-    if (!w->m_isNull) { // indication of end node
-        auto it = std::lower_bound(w->m_bucket.m_head, w->m_bucket.m_head + w->m_bucket.m_size, key,
-                                   [this](const Iter& first, const K& second) -> bool { return m_compare(*first, second); }
-        );
-        offset = it - w->m_bucket.m_head;
-        assert(offset != w->m_bucket.m_size);
-    }
-    
-    return iterator(w, offset);    // return best remembered candidate
-}
-
-template <uint32_t Capacity, typename Iter, typename Pred>
-template <typename K>
-typename OrderedMultiSet<Capacity, Iter, Pred>::iterator OrderedMultiSet<Capacity, Iter, Pred>::UpperBound(const K& key) const noexcept {
-    BucketNode* x = Root();
-    BucketNode* w = HeadNode();
-
-    while (!x->m_isNull) {
-        if (m_compare(key, x->m_bucket.m_head[x->m_bucket.m_size - 1])) {
-            w = x;
-            x = x->m_left;    // descend left subtree
-        } else { // x not less than _Keyval, remember it
-            x = x->m_right;    // descend right subtree
-        }
-    }
-    
-    size_t offset = 0;
-    if (!w->m_isNull) { // indication of end node
-        auto it = std::upper_bound(w->m_bucket.m_head, w->m_bucket.m_head + w->m_bucket.m_size, key,
-                                   [this](const K& first, const Iter& second) -> bool { return m_compare(first, *second); }
-                                   );
-
-        offset = it - w->m_bucket.m_head;
-        assert(offset != w->m_bucket.m_size);
-    }
-    
-    return iterator(w, offset);    // return best remembered candidate
- }
-
-// common equal range
-template <uint32_t Capacity, typename Iter, typename Pred>
-template<typename I, typename K>
-std::pair<I, I> OrderedMultiSet<Capacity, Iter, Pred>::EqualRange(const K& key) const noexcept {
-    BucketNode* x = Root();
-    BucketNode* lowerNode = HeadNode();    // end() if search fails
-    BucketNode* upperNode = HeadNode();    // end() if search fails
-
-    while (!x->m_isNull) {
-        if (m_compare(*x->m_bucket.m_head[x->m_bucket.m_size - 1], key)) {
-            x = x->m_right;    // descend right subtree
-        } else {    // x not less than key, remember it
-            if (upperNode->m_isNull && m_compare(key, *x->m_bucket.m_head[x->m_bucket.m_size - 1])) {
-                upperNode = x;    // x greater than key, remember it
-            }
-            lowerNode = x;
-            x = x->m_left;    // descend left subtree
-        }
-    }
-    x = upperNode->m_isNull ? Root() : upperNode->m_left;    // continue scan for upper bound
-    while (!x->m_isNull) {
-        if (m_compare(key, *x->m_bucket.m_head[x->m_bucket.m_size - 1])) {    // x greater than key, remember it
-            upperNode = x;
-            x = x->m_left;    // descend left subtree
-        } else {
-            x = x->m_right;    // descend right subtree
-        }
-    }
-        
-    size_t lowerOffset = 0;
-    if (!lowerNode->m_isNull) { // indication of end node
-        auto it = std::lower_bound(lowerNode->m_bucket.m_head, lowerNode->m_bucket.m_head + lowerNode->m_bucket.m_size, key,
-                                   [this](const Iter& first, const K& second) -> bool { return m_compare(*first, second); }
-                                   );
-
-        lowerOffset = it - lowerNode->m_bucket.m_head;
-        assert(lowerOffset != lowerNode->m_bucket.m_size);
-    }
-    
-    size_t upperOffset = 0;
-    if (!upperNode->m_isNull) { // indication of end node
-        auto it = std::upper_bound(upperNode->m_bucket.m_head, upperNode->m_bucket.m_head + upperNode->m_bucket.m_size, key,
-                                   [this](const K& first, const Iter& second) -> bool { return m_compare(first, *second); }
-                                   );
-        upperOffset = it - upperNode->m_bucket.m_head;
-        assert(upperOffset != upperNode->m_bucket.m_size);
-    }
-    
-    return {I(lowerNode, lowerOffset), I(upperNode, upperOffset)};
 }
 
 template <uint32_t Capacity, typename Iter, typename Pred>
@@ -355,7 +249,9 @@ typename OrderedMultiSet<Capacity, Iter, Pred>::BucketNode* OrderedMultiSet<Capa
 
 template <uint32_t Capacity, typename Iter, typename Pred>
 /*static*/
-void OrderedMultiSet<Capacity, Iter, Pred>::Destroy(OrderedMultiSet<Capacity, Iter, Pred>::BucketNode* node) noexcept {
+void OrderedMultiSet<Capacity, Iter, Pred>::Destroy(BucketNode* node) noexcept {
+    // recursive calls to the depth of the tree, with a standard stack size it could accomodate up to 64K recursions.
+    // i.e. 2^64K nodes - unrealistic.
     if (!node->m_isNull) {
         Destroy(node->m_left);
         Destroy(node->m_right);
@@ -364,21 +260,51 @@ void OrderedMultiSet<Capacity, Iter, Pred>::Destroy(OrderedMultiSet<Capacity, It
 }
 
 template <uint32_t Capacity, typename Iter, typename Pred>
-template <typename I, typename K>
-std::pair<I, I>
+template <typename K>
+std::pair<typename OrderedMultiSet<Capacity, Iter, Pred>::const_iterator, typename OrderedMultiSet<Capacity, Iter, Pred>::const_iterator>
 OrderedMultiSet<Capacity, Iter, Pred>::equal_range(const K& key) const noexcept {
-    return EqualRange<I>(key);
-}
+    const BucketNode* x = Root();
+    const BucketNode* l = HeadNode();    // end() if search fails
+    const BucketNode* u = HeadNode();    // end() if search fails
 
-template <uint32_t Capacity, typename Iter, typename Pred>
-template <typename I, typename K>
-I OrderedMultiSet<Capacity, Iter, Pred>::Find(const K& key) const noexcept {
-    I it = LowerBound(key);
-    if (it != end<const_iterator>() && !m_compare(key, **it)) {
-        return it;
+    while (!x->m_isNull) {
+        if (m_compare(*x->m_bucket.m_head[x->m_bucket.m_size - 1], key)) {
+            x = x->m_right;    // descend right subtree
+        } else {    // x not less than key, remember it
+            if (u->m_isNull && m_compare(key, *x->m_bucket.m_head[x->m_bucket.m_size - 1])) {
+                u = x;    // x greater than key, remember it
+            }
+            l = x;
+            x = x->m_left;    // descend left subtree
+        }
+    }
+    x = u->m_isNull ? Root() : u->m_left;    // continue scan for upper bound
+    while (!x->m_isNull) {
+        if (m_compare(key, *x->m_bucket.m_head[x->m_bucket.m_size - 1])) {    // x greater than key, remember it
+            u = x;
+            x = x->m_left;    // descend left subtree
+        } else {
+            x = x->m_right;    // descend right subtree
+        }
+    }
+        
+    size_t lOffset = 0;
+    if (!l->m_isNull) { // indication of not end node, head is valid
+        lOffset = std::lower_bound(l->m_bucket.m_head, l->m_bucket.m_head + l->m_bucket.m_size, key,
+                                   [this](const Iter& first, const K& second) -> bool { return m_compare(*first, second); }
+        ) - l->m_bucket.m_head;
+        assert(lOffset != l->m_bucket.m_size);
     }
     
-    return end<const_iterator>();
+    size_t uOffset = 0;
+    if (!u->m_isNull) { // indication of end node
+        uOffset = std::upper_bound(u->m_bucket.m_head, u->m_bucket.m_head + u->m_bucket.m_size, key,
+                                   [this](const K& first, const Iter& second) -> bool { return m_compare(first, *second); }
+        ) - u->m_bucket.m_head;
+        assert(uOffset != u->m_bucket.m_size);
+    }
+    
+    return {const_iterator(l, lOffset), const_iterator(u, uOffset)};
 }
 
 template <uint32_t Capacity, typename Iter, typename Pred>
@@ -388,20 +314,45 @@ bool OrderedMultiSet<Capacity, Iter, Pred>::is_equal(const K& first, const K& se
 }
 
 template <uint32_t Capacity, typename Iter, typename Pred>
-template <typename I, typename K>
-I
+template <typename K>
+typename OrderedMultiSet<Capacity, Iter, Pred>::const_iterator
 OrderedMultiSet<Capacity, Iter, Pred>::find(const K& key) const noexcept {
-    return Find<I>(key);
+    const BucketNode* x = Root();
+    const BucketNode* l = HeadNode();
+
+    while (!x->m_isNull) {
+        if (m_compare(*x->m_bucket.m_head[x->m_bucket.m_size - 1], key)) {
+            x = x->m_right;    // descend right subtree
+        } else { // x not less than key, remember it
+            l = x;
+            x = x->m_left;    // descend left subtree
+        }
+    }
+    
+    size_t offset = 0;
+    if (!l->m_isNull) { // indication of end node
+        offset = std::lower_bound(l->m_bucket.m_head, l->m_bucket.m_head + l->m_bucket.m_size, key,
+                                   [this](const Iter& first, const K& second) -> bool { return m_compare(*first, second); }
+        ) - l->m_bucket.m_head;
+        assert(offset != l->m_bucket.m_size);
+    }
+    
+    const_iterator lower(l, offset);
+    if (lower != end() && !m_compare(key, **lower)) {
+        return lower;
+    }
+    
+    return end();
 }
 
 template <uint32_t Capacity, typename Iter, typename Pred>
-std::pair<typename OrderedMultiSet<Capacity, Iter, Pred>::iterator, bool>
+bool
 OrderedMultiSet<Capacity, Iter, Pred>::insert(bool, const Iter& key) noexcept {
     // - Cases:
-    // 1. Found a bucket where the new key can be inserted - no new bucket node or rebalnce is required
-    // 2. Found a bucket where the new can supposed to be but bucket is full
+    // 1. Found a bucket where the new key can be inserted - no new bucket node or rebalance is required
+    // 2. Found a bucket where the new key is supposed to be but bucket is full
     //      2.a - split the old bucket into two buckets and insert the new key into the correct position
-    //      2.b - old bucket will surve as a parent node for the new node, reconnect the new node and do the rebalance
+    //      2.b - old bucket will serve as a parent node for the new node, reconnect the new node and do the rebalance
     // 3. First bucket - just create a new bucket node as a root and add the new key
 
     BucketNode* x = Root();
@@ -409,6 +360,7 @@ OrderedMultiSet<Capacity, Iter, Pred>::insert(bool, const Iter& key) noexcept {
     bool addLeft = true;
     while (!x->m_isNull) {  // look for the bucket to insert
         w = x;
+        
         if (m_compare(*key, *x->m_bucket.m_head[0])) { // i.e. 1 [2,3]
             x = x->m_left;
             addLeft = true;
@@ -423,7 +375,7 @@ OrderedMultiSet<Capacity, Iter, Pred>::insert(bool, const Iter& key) noexcept {
             addLeft = false;
         }
     }
-
+    
     if (!w->m_isNull) {
         if (w->m_bucket.m_size != Capacity) {
             assert(w->m_bucket.m_size > 0);
@@ -441,7 +393,7 @@ OrderedMultiSet<Capacity, Iter, Pred>::insert(bool, const Iter& key) noexcept {
             memcpy(ptr, &key, sizeof(key));
             ++w->m_bucket.m_size;
             ++m_totalItems;
-            return {iterator(w, offset), true};
+            return true;
         } else if (w->m_bucket.m_size != 1) {
             assert(w->m_bucket.m_size == Capacity);
             // the bucket is full - split it
@@ -574,12 +526,12 @@ OrderedMultiSet<Capacity, Iter, Pred>::insert(bool, const Iter& key) noexcept {
     }
     Root()->m_isBlack = true;
     ++m_totalItems;
-    return {iterator(x, 0), true};
+    return true;
 }
 
 template <uint32_t Capacity, typename Iter, typename Pred>
 size_t OrderedMultiSet<Capacity, Iter, Pred>::erase(Iter key) noexcept {
-    for (std::pair<iterator, iterator> p = equal_range<iterator>(*key); p.first != p.second; ++p.first) {
+    for (auto p = equal_range(*key); p.first != p.second; ++p.first) {
         if (*p.first == key) {
             BucketNode* node = p.first.GetNodePtr();
             size_t offset = p.first.GetOffset();
