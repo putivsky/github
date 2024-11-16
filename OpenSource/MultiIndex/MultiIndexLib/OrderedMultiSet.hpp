@@ -32,8 +32,8 @@ typename OrderedMultiSet<Capacity, Iter, Pred>::BucketNode*& OrderedMultiSet<Cap
 }
 
 template <uint32_t Capacity, typename Iter, typename Pred>
-typename OrderedMultiSet<Capacity, Iter, Pred>::BucketNode*& OrderedMultiSet<Capacity, Iter, Pred>::LMost() noexcept { // return leftmost node in non-mutable tree
-    return m_headNode.m_left;
+typename OrderedMultiSet<Capacity, Iter, Pred>::BucketNode*& OrderedMultiSet<Capacity, Iter, Pred>::LMost() const noexcept { // return leftmost node in non-mutable tree
+    return const_cast<BucketNode*&>(m_headNode.m_left);
 }
 
 template <uint32_t Capacity, typename Iter, typename Pred>
@@ -87,7 +87,7 @@ void OrderedMultiSet<Capacity, Iter, Pred>::Remove(BucketNode* z) noexcept {
     } else if (x->m_right->m_isNull) {
         r = x->m_left;    // stitch up left subtree
     } else {    // two subtrees, must lift successor node to replace erased
-        const_iterator next(z, z->m_bucket.m_size - 1);
+        iterator next(z, z->m_bucket.m_size - 1);
         ++next;
         x = next.GetNodePtr();    // x is successor node
         r = x->m_right;    // r is only subtree
@@ -261,7 +261,7 @@ void OrderedMultiSet<Capacity, Iter, Pred>::Destroy(BucketNode* node) noexcept {
 
 template <uint32_t Capacity, typename Iter, typename Pred>
 template <typename K>
-std::pair<typename OrderedMultiSet<Capacity, Iter, Pred>::const_iterator, typename OrderedMultiSet<Capacity, Iter, Pred>::const_iterator>
+std::pair<typename OrderedMultiSet<Capacity, Iter, Pred>::iterator, typename OrderedMultiSet<Capacity, Iter, Pred>::iterator>
 OrderedMultiSet<Capacity, Iter, Pred>::equal_range(const K& key) const noexcept {
     const BucketNode* x = Root();
     const BucketNode* l = HeadNode();    // end() if search fails
@@ -304,7 +304,7 @@ OrderedMultiSet<Capacity, Iter, Pred>::equal_range(const K& key) const noexcept 
         assert(uOffset != u->m_bucket.m_size);
     }
     
-    return {const_iterator(l, lOffset), const_iterator(u, uOffset)};
+    return {iterator(l, lOffset), iterator(u, uOffset)};
 }
 
 template <uint32_t Capacity, typename Iter, typename Pred>
@@ -315,7 +315,7 @@ bool OrderedMultiSet<Capacity, Iter, Pred>::is_equal(const K& first, const K& se
 
 template <uint32_t Capacity, typename Iter, typename Pred>
 template <typename K>
-typename OrderedMultiSet<Capacity, Iter, Pred>::const_iterator
+typename OrderedMultiSet<Capacity, Iter, Pred>::iterator
 OrderedMultiSet<Capacity, Iter, Pred>::find(const K& key) const noexcept {
     const BucketNode* x = Root();
     const BucketNode* l = HeadNode();
@@ -337,7 +337,7 @@ OrderedMultiSet<Capacity, Iter, Pred>::find(const K& key) const noexcept {
         assert(offset != l->m_bucket.m_size);
     }
     
-    const_iterator lower(l, offset);
+    iterator lower(l, offset);
     if (lower != end() && !m_compare(key, **lower)) {
         return lower;
     }
@@ -587,9 +587,9 @@ void OrderedMultiSet<Capacity, Iter, Pred>::clear() noexcept {
 
 template <uint32_t Capacity, typename Iter, typename Pred>
 void OrderedMultiSet<Capacity, Iter, Pred>::traverse() const noexcept {
-    // find value by index
-    for (auto bIt = begin(), eIt = end(); bIt != eIt; ++bIt) {
-        printf("Item(ordered): %d\n", (*bIt)->i);
+    // direct
+    for (auto bDirIt = begin(), eDirIt = end(); bDirIt != eDirIt; ++bDirIt) {
+        printf("Item(ordered): %d\n", (*bDirIt)->i);
     }
     printf("_______________________\n");
 }

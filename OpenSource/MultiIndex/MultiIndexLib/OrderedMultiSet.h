@@ -33,15 +33,16 @@ class OrderedMultiSet {
         bool m_isNull{false};
     };
 
-public:
-    class const_iterator {
+private:
+    // not publicaly exposed, no need to follow std iterator interface
+    class iterator {
         const BucketNode* m_ptr{nullptr};
         size_t m_bucketOffset{0};
 
     public:
-        const_iterator(const BucketNode* ptr, size_t bucketOffset) noexcept : m_ptr(ptr), m_bucketOffset(bucketOffset) {}
+        iterator(const BucketNode* ptr, size_t bucketOffset) noexcept : m_ptr(ptr), m_bucketOffset(bucketOffset) {}
 
-        inline const_iterator& operator++() noexcept {
+        inline iterator& operator++() noexcept {
             if (!m_ptr->m_isNull) {
                 if (m_bucketOffset + 1 < m_ptr->m_bucket.m_size) {
                     // move offset
@@ -63,20 +64,14 @@ public:
             return *this;
         }
         
-        inline const_iterator operator++(int) noexcept {
-            const_iterator tmp(*this);
-            ++(*this);
-            return tmp;
-        }
-
-        inline const_iterator& operator--() noexcept {
+        inline iterator& operator--() noexcept {
             if (m_bucketOffset > 0) {
                 // retreat offset
                 --m_bucketOffset;
             } else if (m_ptr->m_isNull) {
                 m_ptr = m_ptr->m_right;
-                m_bucketOffset = m_ptr->m_bucket.m_size - 1;
-            } else if (!m_ptr->m_left->m_iNull) {
+                m_bucketOffset = m_ptr->m_isNull ? 0 : m_ptr->m_bucket.m_size - 1;
+            } else if (!m_ptr->m_left->m_isNull) {
                 m_ptr = Max(m_ptr->m_left);
                 m_bucketOffset = m_ptr->m_bucket.m_size - 1;
             } else {
@@ -88,35 +83,25 @@ public:
                     m_bucketOffset = 0;
                 } else {
                     m_ptr = x;
-                    m_bucketOffset = m_ptr->m_bucket.m_size - 1;
+                    m_bucketOffset = m_ptr->m_isNull ? 0 : m_ptr->m_bucket.m_size - 1;
                 }
             }
             
             return *this;
-        }
-        
-        inline const_iterator operator--(int) noexcept {
-            const_iterator tmp(*this);
-            --(*this);
-            return tmp;
         }
 
         inline Iter& operator*() const noexcept {
             return GetNodePtr()->m_bucket.m_head[m_bucketOffset];
         }
         
-        inline Iter* operator->() const noexcept {
-            return GetNodePtr()->m_bucket.m_head + m_bucketOffset;
-        }
-
         inline size_t GetOffset() const { return m_bucketOffset; }
         inline BucketNode* GetNodePtr() const { return const_cast<BucketNode*>(m_ptr); }
 
-        inline bool operator==(const const_iterator& right) const noexcept {
+        inline bool operator==(const iterator& right) const noexcept {
             return m_ptr == right.m_ptr && m_bucketOffset == right.m_bucketOffset;
         }
 
-        inline bool operator!=(const const_iterator& right) const noexcept {
+        inline bool operator!=(const iterator& right) const noexcept {
             return !(*this == right);
         }
     };
@@ -127,7 +112,7 @@ private:
     BucketNode* HeadNode() const noexcept;
     BucketNode*& Root() const noexcept ;
     BucketNode*& RMost() noexcept;
-    BucketNode*& LMost() noexcept;
+    BucketNode*& LMost() const noexcept;
     void LRotate(BucketNode* w) noexcept;
     void RRotate(BucketNode* w) noexcept;
     void Remove(BucketNode* z) noexcept;
@@ -166,15 +151,15 @@ protected:
     
     // const version equal_range
     template <typename K>
-    std::pair<const_iterator, const_iterator> equal_range(const K& key) const noexcept;
+    std::pair<iterator, iterator> equal_range(const K& key) const noexcept;
 
     // find the first item by the key.
     template <typename K>
-    const_iterator find(const K& key) const noexcept;
+    iterator find(const K& key) const noexcept;
 
-    const_iterator begin() const noexcept { return const_iterator(LMost(), 0); }
+    iterator begin() const noexcept { return iterator(LMost(), 0); }
 
-    const_iterator end() const noexcept { return const_iterator(HeadNode(), 0); }
+    iterator end() const noexcept { return iterator(HeadNode(), 0); }
     
     // clear
     void clear() noexcept;

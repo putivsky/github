@@ -17,8 +17,7 @@
 template <uint32_t Capacity, typename Iter, typename Pred>
 class HashedOrderedMultiSet : public HashedMultiSet<HashedOrderedMultiSet<Capacity, Iter, Pred>, Capacity, Iter, Pred> {
 public:
-    using ThisType = HashedOrderedMultiSet<Capacity, Iter, Pred>;
-    using BaseType = HashedMultiSet<ThisType, Capacity, Iter, Pred>;
+    using BaseType = HashedMultiSet<HashedOrderedMultiSet<Capacity, Iter, Pred>, Capacity, Iter, Pred>;
 
     template <typename I, typename K>
     inline static std::pair<I, I> EqualKeys(
@@ -33,7 +32,10 @@ public:
         const Pred& pred) noexcept;
 
     template<typename K>
-    inline static bool IsEqual(const K& first, const K& second, const Pred& pred) noexcept;
+    inline static bool IsEqual(
+        const K& first,
+        const K& second,
+        const Pred& pred) noexcept;
 
 private:
     HashedOrderedMultiSet(const HashedOrderedMultiSet& src) noexcept = delete;

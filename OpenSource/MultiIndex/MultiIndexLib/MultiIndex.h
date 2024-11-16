@@ -29,7 +29,7 @@ using TupleParams = std::tuple<size_t, float, Pred>;
 #include "UnOrderedMultiSet.h"
 
 enum class LockPolicy {
-    Internal = 0, // API takes care the proper read/write locking
+    Internal = 0, // API takes care of the proper read/write locking
     External // caller should properly organize access to the API in multi-threaded environment.
 };
 
@@ -107,8 +107,8 @@ class MultiIndexTable
 {
     using ObjectContainer = std::list<T>;
     using Iter = typename ObjectContainer::iterator;
-    using BitRef = typename std::bitset<sizeof...(P)>::reference;
     using ItersContainer = std::list<Iter>;
+    using BitRef = typename std::bitset<sizeof...(P)>::reference;
 
     template<typename I, typename... ARGS>
     class CommonIndex : public I {
@@ -129,9 +129,8 @@ class MultiIndexTable
         // Type S should have: void operator()(const T& object)
         template<typename S>
         void FindBySelector(S&& selector, const T& what) const noexcept;
-        
-        void Clear();
-        void Traverse();
+        void Clear() noexcept;
+        void Traverse() const noexcept;
     };
 
     // converts predicates types into Hashed/Unordered/Ordered indexes.
@@ -177,17 +176,15 @@ public:
     MultiIndexTable(size_t hashSize, float maxFactor, P&& ...predicates) noexcept;
     ~MultiIndexTable() noexcept;
     // operations - insert, update, delete, search.
-    
     // Insert the new object and update all indexes.
     // Insert call may trigger the index rehash for the hashed indices unless noRehash is set to true
-    void Insert(bool noRehash, T&& obj) noexcept;
+    void Insert(T&& obj, bool noRehash = false) noexcept;
     // Update affected objects by index and update all indices
     template<size_t I>
     bool Update(const T& where, T&& what) noexcept;
     // Delete affected objects by index and update all indices
     template<size_t I>
     size_t Delete(const T& where) noexcept;
-    
     // Search by index, finds the first object by index or not
     // that matches @what.
     template<size_t I>
@@ -199,11 +196,12 @@ public:
     template<size_t I, typename S>
     void FindBySelector(S&& selector, const T& what) const noexcept;
     
+    // delete all content from storage and indices.
     void Clear() noexcept;
     
     // DEBUG
     template<size_t I>
-    void Traverse() noexcept;
+    void Traverse() const noexcept;
 };
 
 #include "MultiIndex.hpp"

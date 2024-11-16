@@ -104,14 +104,14 @@ MultiIndexTable<L, Capacity, T, P...>::CommonIndex<I, ARGS...>::FindBySelector(S
 template<LockPolicy L, uint32_t Capacity, typename T, typename... P>
 template<typename I, typename... ARGS>
 void
-MultiIndexTable<L, Capacity, T, P...>::CommonIndex<I, ARGS...>::Clear() {
+MultiIndexTable<L, Capacity, T, P...>::CommonIndex<I, ARGS...>::Clear() noexcept {
     this->clear();
 }
 
 template<LockPolicy L, uint32_t Capacity, typename T, typename... P>
 template<typename I, typename... ARGS>
 void
-MultiIndexTable<L, Capacity, T, P...>::CommonIndex<I, ARGS...>::Traverse() {
+MultiIndexTable<L, Capacity, T, P...>::CommonIndex<I, ARGS...>::Traverse() const noexcept {
     this->traverse();
 }
 
@@ -132,7 +132,7 @@ MultiIndexTable<L, Capacity, T, P...>::~MultiIndexTable() noexcept {
 }
 
 template<LockPolicy L, uint32_t Capacity, typename T, typename... P>
-void MultiIndexTable<L, Capacity, T, P...>::Insert(bool noRehash, T&& obj) noexcept {
+void MultiIndexTable<L, Capacity, T, P...>::Insert(T&& obj, bool noRehash) noexcept {
     std::bitset<sizeof...(P)> affectedIndices(1);
     // lock
     WriteLock<L> locker(m_mutex);
@@ -248,7 +248,7 @@ void MultiIndexTable<L, Capacity, T, P...>::Clear() noexcept {
 
 template<LockPolicy L, uint32_t Capacity, typename T, typename... P>
 template<size_t I>
-void MultiIndexTable<L, Capacity, T, P...>::Traverse() noexcept {
+void MultiIndexTable<L, Capacity, T, P...>::Traverse() const noexcept {
     // check the index existance
     static_assert(I < sizeof...(P), "Index is out of range");
     // find the index by a position

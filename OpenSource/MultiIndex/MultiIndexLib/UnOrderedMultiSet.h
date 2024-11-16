@@ -17,8 +17,7 @@
 template <uint32_t Capacity, typename Iter, typename Pred>
 class UnOrderedMultiSet : public HashedMultiSet<UnOrderedMultiSet<Capacity, Iter, Pred>, Capacity, Iter, Pred> {
 public:
-    using ThisType = UnOrderedMultiSet<Capacity, Iter, Pred>;
-    using BaseType = HashedMultiSet<ThisType, Capacity, Iter, Pred>;
+    using BaseType = HashedMultiSet<UnOrderedMultiSet<Capacity, Iter, Pred>, Capacity, Iter, Pred>;
 
     template <typename I, typename K>
     inline static std::pair<I, I> EqualKeys(
