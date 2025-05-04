@@ -1,23 +1,17 @@
 cmake_minimum_required(VERSION 3.16.0 FATAL_ERROR)
 
-set(PROJECT_NAME MultiIndexTest)
+set(PROJECT_NAME SingletonStorage)
 project(${PROJECT_NAME})
 
 ################################################################################
 # Source groups
 ################################################################################
 set(Headers
-    "../MultiIndexLib/MultiIndex.h"
-    "../MultiIndexLib/MultiIndex.hpp"
-    "../MultiIndexLib/HashedMultiSet.h"
-    "../MultiIndexLib/HashedMultiSet.hpp"
-    "../MultiIndexLib/HashedOrderedMultiSet.h"
-    "../MultiIndexLib/HashedOrderedMultiSet.hpp"
-    "../MultiIndexLib/OrderedMultiSet.h"
-    "../MultiIndexLib/OrderedMultiSet.hpp"
-    "../MultiIndexLib/UnorderedMultiSet.h"
-    "../MultiIndexLib/UnorderedMultiSet.hpp"
-)
+    "./SingletonStorageFactory.h"
+    "./SingletonStorageFactory.hpp"
+    "./SingletonStorageImpl.h"
+    "./SingletonStorageImpl.hpp"
+ )
 
 source_group("Headers" FILES ${Headers})
 
@@ -36,6 +30,7 @@ set(ALL_FILES
 # Target
 ################################################################################
 add_executable(${PROJECT_NAME} ${ALL_FILES})
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 
 ################################################################################
 # Output directory
@@ -46,13 +41,6 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     INTERPROCEDURAL_OPTIMIZATION_RELEASE "TRUE"
-)
-
-################################################################################
-# Include directories
-################################################################################
-target_include_directories(${PROJECT_NAME} PUBLIC
-    "${CMAKE_CURRENT_SOURCE_DIR}/../MultiIndexLib"
 )
 
 ################################################################################

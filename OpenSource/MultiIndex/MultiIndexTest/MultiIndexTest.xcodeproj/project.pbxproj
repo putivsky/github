@@ -27,7 +27,6 @@
 		F22B96EB2CB5C0D9000CADC4 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		F22B96ED2CB5C132000CADC4 /* libMultiIndex.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libMultiIndex.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F22B96F02CB5C40C000CADC4 /* libMultiIndex.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libMultiIndex.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		F2EE64C32CDD63D30020BB26 /* MultiIndexTest.profdata */ = {isa = PBXFileReference; lastKnownFileType = file; path = MultiIndexTest.profdata; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,7 +46,6 @@
 				F22B96EB2CB5C0D9000CADC4 /* main.cpp */,
 				F22B96EC2CB5C132000CADC4 /* Frameworks */,
 				F22B96B72CB5BF28000CADC4 /* Products */,
-				F2EE64C42CDD63D30020BB26 /* OptimizationProfiles */,
 			);
 			sourceTree = "<group>";
 		};
@@ -66,14 +64,6 @@
 				F22B96ED2CB5C132000CADC4 /* libMultiIndex.a */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		F2EE64C42CDD63D30020BB26 /* OptimizationProfiles */ = {
-			isa = PBXGroup;
-			children = (
-				F2EE64C32CDD63D30020BB26 /* MultiIndexTest.profdata */,
-			);
-			path = OptimizationProfiles;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -105,7 +95,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastUpgradeCheck = 1610;
+				LastUpgradeCheck = 1630;
 				TargetAttributes = {
 					F22B96B52CB5BF28000CADC4 = {
 						CreatedOnToolsVersion = 16.0;
@@ -154,6 +144,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_OPTIMIZATION_PROFILE_FILE = "";
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
@@ -216,6 +207,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_OPTIMIZATION_PROFILE_FILE = "";
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;

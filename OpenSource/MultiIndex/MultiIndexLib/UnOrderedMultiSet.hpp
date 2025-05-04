@@ -13,18 +13,6 @@ UnOrderedMultiSet<Capacity, Iter, Pred>::UnOrderedMultiSet(TupleParams<Pred>&& p
 template <uint32_t Capacity, typename Iter, typename Pred>
 template <typename I, typename K>
 /*static*/
-I
-UnOrderedMultiSet<Capacity, Iter, Pred>::LowerInBucket(const typename BaseType::Bucket& bucket, const K& key, const Pred& pred) noexcept {
-    // find the first same key, if any
-    size_t lowerIdx = 0;
-    for (; lowerIdx < bucket.m_size && !pred(key, *bucket.m_head[lowerIdx]); ++lowerIdx);
-
-    return I(bucket.m_head + lowerIdx);
-}
-
-template <uint32_t Capacity, typename Iter, typename Pred>
-template <typename I, typename K>
-/*static*/
 std::pair<I, I>
 UnOrderedMultiSet<Capacity, Iter, Pred>::EqualKeys(const typename BaseType::Bucket& bucket, const K& key, const Pred& pred) noexcept {
     size_t lowerIdx = LowerInBucket<I>(bucket, key, pred) - bucket.m_head;
@@ -32,6 +20,18 @@ UnOrderedMultiSet<Capacity, Iter, Pred>::EqualKeys(const typename BaseType::Buck
     for (; upperIdx < bucket.m_size && pred(key, *bucket.m_head[upperIdx]); ++upperIdx);
 
     return {I(bucket.m_head + lowerIdx), I(bucket.m_head + upperIdx)};
+}
+
+template <uint32_t Capacity, typename Iter, typename Pred>
+template <typename I, typename K>
+/*static*/
+I
+UnOrderedMultiSet<Capacity, Iter, Pred>::LowerInBucket(const typename BaseType::Bucket& bucket, const K& key, const Pred& pred) noexcept {
+    // find the first same key, if any
+    size_t lowerIdx = 0;
+    for (; lowerIdx < bucket.m_size && !pred(key, *bucket.m_head[lowerIdx]); ++lowerIdx);
+
+    return I(bucket.m_head + lowerIdx);
 }
 
 template <uint32_t Capacity, typename Iter, typename Pred>

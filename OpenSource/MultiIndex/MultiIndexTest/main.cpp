@@ -8,6 +8,7 @@
 #include "MultiIndex.h"
 #include <stdio.h>
 #include <string>
+#include <compare>
 
 #if defined(_WIN32)
 #include<windows.h>
@@ -71,21 +72,43 @@ unsigned long long membytes(void) {
 struct Object {
     int i;
     std::string s;
+    
+    inline size_t operator()() const { // hash operator
+        return std::hash<int>{}(i) + std::hash<std::string>{}(s);
+    }
+    
+    inline bool operator==(const Object& o) const { // equal operator
+        return i == o.i && s == o.s;
+    }
+    
+    inline bool operator<(const Object& o) const { // less operator
+        return i != o.i ? i < o.i : s < o.s;
+    }
+};
+
+struct IndexHashedOrderedPredicate : HashedOrderedTraits {
+    inline size_t operator()(const Object& o) const noexcept {
+        return o();
+    }
+
+    inline bool operator()(const Object& x, const Object& y) const noexcept {
+        return x < y;
+    }
 };
 
 struct IndexUnOrderedPredicate : UnOrderedTraits {
     inline size_t operator()(const Object& o) const noexcept {
-        return std::hash<int>{}(o.i) + std::hash<std::string>{}(o.s);
+        return o();
     }
     
-    inline bool operator()(const Object& first, const Object& second) const noexcept {
-        return first.i != second.i ? (first.i < second.i) : first.s < second.s;
+    inline bool operator()(const Object& x, const Object& y) const noexcept {
+        return x == y;
     }
 };
 
 struct IndexOrderedPredicate : OrderedTraits {
-    inline bool operator()(const Object& first, const Object& second) const noexcept {
-        return first.i != second.i ? (first.i < second.i) : first.s < second.s;
+    inline bool operator()(const Object& x, const Object& y) const noexcept {
+        return x < y;
     }
 };
 
@@ -98,11 +121,21 @@ int main() {
     
     IndexUnOrderedPredicate ind1;
     IndexOrderedPredicate ind2;
-    MultiIndexTable<LockPolicy::External, kBuckets, Object, IndexUnOrderedPredicate, IndexOrderedPredicate>
-    table(kRounds / kBuckets, kBuckets, std::move(ind1), std::move(ind2));
+    IndexHashedOrderedPredicate ind3;
+    MultiIndexTable<LockPolicy::External, kBuckets, Object, IndexUnOrderedPredicate, IndexOrderedPredicate, IndexHashedOrderedPredicate>
+    table(kRounds / kBuckets, kBuckets, std::move(ind1), std::move(ind2), std::move(ind3));
 
     Object o1 = {1, "1"}, o2 = {2, "2"};
     Object o1copy1(o1), o1copy2(o2);
+    
+    table.Insert(std::move(o1copy1));
+    auto range = table.FindAll<0>(o2);
+    table.Delete<0>(o2);
+    table.Delete<2>(o1);
+    range = table.FindAll<0>(o1);
+    range = table.FindAll<2>(o2);
+
+    
 
     auto startTime = std::chrono::high_resolution_clock::now();
 
@@ -110,9 +143,9 @@ int main() {
     for (int i = kRounds; i >= 0; --i) {
         auto v = std::rand() % (kRounds/kBuckets);
         Object ocopy = {v, std::to_string(v)};
-        table.Insert(std::move(ocopy));
+        table.Insert(std::move(ocopy), true);
     }
-    
+        
     auto endTime = std::chrono::high_resolution_clock::now();
     // Difference is calculated
     auto delta = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
@@ -126,34 +159,57 @@ int main() {
     "Done with Terimber: %lld mem: %llu\n"
 #endif
            , delta.count(), tMem - iMem);
-    auto resRange1 = table.FindAll<1>(o1);
-    auto resRange2 = table.FindAll<0>(o1);
-    auto resRange3 = table.FindAll<1>(o2);
+    auto resRange1 = table.FindAll<0>(o1);
+    auto resRange2 = table.FindAll<1>(o1);
+    auto resRange3 = table.FindAll<2>(o1);
     auto resRange4 = table.FindAll<0>(o2);
+    auto resRange5 = table.FindAll<1>(o2);
+    auto resRange6 = table.FindAll<2>(o2);
     
+    resRange1.clear();
+    resRange2.clear();
+    resRange3.clear();
+
+    table.FindBySelector<0>([&resRange1](const Object& item) { resRange1.push_back(item); }, o1);
+    table.FindBySelector<1>([&resRange2](const Object& item) { resRange2.push_back(item); }, o1);
+    table.FindBySelector<2>([&resRange3](const Object& item) { resRange3.push_back(item); }, o1);
+
     
     table.Update<1>(o2, std::move(o1copy1));
     resRange1 = table.FindAll<0>(o1);
     resRange2 = table.FindAll<1>(o1);
-    resRange3 = table.FindAll<0>(o2);
-    resRange4 = table.FindAll<1>(o2);
+    resRange3 = table.FindAll<2>(o1);
+    resRange4 = table.FindAll<0>(o2);
+    resRange5 = table.FindAll<1>(o2);
+    resRange6 = table.FindAll<2>(o2);
 
     table.Update<0>(o1, std::move(o1copy2));
-    resRange1 = table.FindAll<0>(o2);
-    resRange2 = table.FindAll<1>(o2);
+    resRange1 = table.FindAll<0>(o1);
+    resRange2 = table.FindAll<1>(o1);
+    resRange3 = table.FindAll<2>(o1);
+    resRange4 = table.FindAll<0>(o2);
+    resRange5 = table.FindAll<1>(o2);
+    resRange6 = table.FindAll<2>(o2);
 
     auto res1 = table.FindFirst<0>(o1);
     auto res2 = table.FindFirst<1>(o2);
+    auto res3 = table.FindFirst<2>(o2);
     resRange1 = table.FindAll<0>(o1);
-    resRange2 = table.FindAll<1>(o2);
+    resRange2 = table.FindAll<1>(o1);
+    resRange3 = table.FindAll<2>(o1);
+    resRange4 = table.FindAll<0>(o2);
+    resRange5 = table.FindAll<1>(o2);
+    resRange6 = table.FindAll<2>(o2);
 
     table.Delete<1>(o1);
     table.Delete<0>(o2);
  
     res1 = table.FindFirst<0>(o1);
     res2 = table.FindFirst<1>(o2);
+    res3 = table.FindFirst<2>(o2);
     resRange1 = table.FindAll<0>(o1);
     resRange2 = table.FindAll<1>(o2);
+    resRange3 = table.FindAll<2>(o1);
 
     table.Clear();
 }

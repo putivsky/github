@@ -32,9 +32,11 @@
 #include <mutex>
 #include <list>
 #include <map>
+#include <unordered_map>
 #include <typeindex>
 #include <optional>
 #include <type_traits>
+#include <assert.h>
 
 namespace SM {
 

@@ -1,0 +1,327 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		F22B96F22CB5C496000CADC4 /* MultiIndex.h in Headers */ = {isa = PBXBuildFile; fileRef = F22B96D92CB5C04B000CADC4 /* MultiIndex.h */; };
+		F22B96F32CB5C49B000CADC4 /* MultiIndex.hpp in Headers */ = {isa = PBXBuildFile; fileRef = F22B96DA2CB5C04B000CADC4 /* MultiIndex.hpp */; };
+		F22B96F62CBAFAE3000CADC4 /* UnOrderedMultiSet.h in Headers */ = {isa = PBXBuildFile; fileRef = F22B96F52CBAFAD2000CADC4 /* UnOrderedMultiSet.h */; };
+		F22B96F82CBB00FD000CADC4 /* UnOrderedMultiSet.hpp in Headers */ = {isa = PBXBuildFile; fileRef = F22B96F72CBB00FC000CADC4 /* UnOrderedMultiSet.hpp */; };
+		F22B96FB2CBD7B68000CADC4 /* OrderedMultiSet.h in Headers */ = {isa = PBXBuildFile; fileRef = F22B96F92CBD7B68000CADC4 /* OrderedMultiSet.h */; };
+		F22B96FC2CBD7B68000CADC4 /* OrderedMultiSet.hpp in Headers */ = {isa = PBXBuildFile; fileRef = F22B96FA2CBD7B68000CADC4 /* OrderedMultiSet.hpp */; };
+		F2EE64C72CE0023E0020BB26 /* HashedOrderedMultiSet.hpp in Headers */ = {isa = PBXBuildFile; fileRef = F2EE64C62CE0023E0020BB26 /* HashedOrderedMultiSet.hpp */; };
+		F2EE64C82CE0023E0020BB26 /* HashedOrderedMultiSet.h in Headers */ = {isa = PBXBuildFile; fileRef = F2EE64C52CE0023E0020BB26 /* HashedOrderedMultiSet.h */; };
+		F2EE64CB2CE00B880020BB26 /* HashedMultiSet.hpp in Headers */ = {isa = PBXBuildFile; fileRef = F2EE64CA2CE00B880020BB26 /* HashedMultiSet.hpp */; };
+		F2EE64CC2CE00B880020BB26 /* HashedMultiSet.h in Headers */ = {isa = PBXBuildFile; fileRef = F2EE64C92CE00B880020BB26 /* HashedMultiSet.h */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		F22B968F2CB594DA000CADC4 /* libMultiIndex.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMultiIndex.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		F22B96D92CB5C04B000CADC4 /* MultiIndex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MultiIndex.h; sourceTree = "<group>"; };
+		F22B96DA2CB5C04B000CADC4 /* MultiIndex.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MultiIndex.hpp; sourceTree = "<group>"; };
+		F22B96F52CBAFAD2000CADC4 /* UnOrderedMultiSet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UnOrderedMultiSet.h; sourceTree = "<group>"; };
+		F22B96F72CBB00FC000CADC4 /* UnOrderedMultiSet.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = UnOrderedMultiSet.hpp; sourceTree = "<group>"; };
+		F22B96F92CBD7B68000CADC4 /* OrderedMultiSet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OrderedMultiSet.h; sourceTree = "<group>"; };
+		F22B96FA2CBD7B68000CADC4 /* OrderedMultiSet.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = OrderedMultiSet.hpp; sourceTree = "<group>"; };
+		F2EE64C52CE0023E0020BB26 /* HashedOrderedMultiSet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HashedOrderedMultiSet.h; sourceTree = "<group>"; };
+		F2EE64C62CE0023E0020BB26 /* HashedOrderedMultiSet.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = HashedOrderedMultiSet.hpp; sourceTree = "<group>"; };
+		F2EE64C92CE00B880020BB26 /* HashedMultiSet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HashedMultiSet.h; sourceTree = "<group>"; };
+		F2EE64CA2CE00B880020BB26 /* HashedMultiSet.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = HashedMultiSet.hpp; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F22B968D2CB594DA000CADC4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F22B96862CB594DA000CADC4 = {
+			isa = PBXGroup;
+			children = (
+				F2EE64C92CE00B880020BB26 /* HashedMultiSet.h */,
+				F2EE64CA2CE00B880020BB26 /* HashedMultiSet.hpp */,
+				F2EE64C52CE0023E0020BB26 /* HashedOrderedMultiSet.h */,
+				F2EE64C62CE0023E0020BB26 /* HashedOrderedMultiSet.hpp */,
+				F22B96F92CBD7B68000CADC4 /* OrderedMultiSet.h */,
+				F22B96FA2CBD7B68000CADC4 /* OrderedMultiSet.hpp */,
+				F22B96F52CBAFAD2000CADC4 /* UnOrderedMultiSet.h */,
+				F22B96F72CBB00FC000CADC4 /* UnOrderedMultiSet.hpp */,
+				F22B96D92CB5C04B000CADC4 /* MultiIndex.h */,
+				F22B96DA2CB5C04B000CADC4 /* MultiIndex.hpp */,
+				F22B96902CB594DA000CADC4 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F22B96902CB594DA000CADC4 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F22B968F2CB594DA000CADC4 /* libMultiIndex.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		F22B968B2CB594DA000CADC4 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F2EE64CB2CE00B880020BB26 /* HashedMultiSet.hpp in Headers */,
+				F2EE64CC2CE00B880020BB26 /* HashedMultiSet.h in Headers */,
+				F22B96FB2CBD7B68000CADC4 /* OrderedMultiSet.h in Headers */,
+				F22B96FC2CBD7B68000CADC4 /* OrderedMultiSet.hpp in Headers */,
+				F22B96F62CBAFAE3000CADC4 /* UnOrderedMultiSet.h in Headers */,
+				F2EE64C72CE0023E0020BB26 /* HashedOrderedMultiSet.hpp in Headers */,
+				F2EE64C82CE0023E0020BB26 /* HashedOrderedMultiSet.h in Headers */,
+				F22B96F22CB5C496000CADC4 /* MultiIndex.h in Headers */,
+				F22B96F32CB5C49B000CADC4 /* MultiIndex.hpp in Headers */,
+				F22B96F82CBB00FD000CADC4 /* UnOrderedMultiSet.hpp in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		F22B968E2CB594DA000CADC4 /* MultiIndex */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F22B969A2CB594DA000CADC4 /* Build configuration list for PBXNativeTarget "MultiIndex" */;
+			buildPhases = (
+				F22B968B2CB594DA000CADC4 /* Headers */,
+				F22B968C2CB594DA000CADC4 /* Sources */,
+				F22B968D2CB594DA000CADC4 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MultiIndex;
+			packageProductDependencies = (
+			);
+			productName = MultiIndex;
+			productReference = F22B968F2CB594DA000CADC4 /* libMultiIndex.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F22B96872CB594DA000CADC4 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 1610;
+				TargetAttributes = {
+					F22B968E2CB594DA000CADC4 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+				};
+			};
+			buildConfigurationList = F22B968A2CB594DA000CADC4 /* Build configuration list for PBXProject "MultiIndexLib" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = F22B96862CB594DA000CADC4;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = F22B96902CB594DA000CADC4 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F22B968E2CB594DA000CADC4 /* MultiIndex */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F22B968C2CB594DA000CADC4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		F22B96982CB594DA000CADC4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		F22B96992CB594DA000CADC4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		F22B969B2CB594DA000CADC4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = RU6HM6JTH5;
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		F22B969C2CB594DA000CADC4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = RU6HM6JTH5;
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F22B968A2CB594DA000CADC4 /* Build configuration list for PBXProject "MultiIndexLib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F22B96982CB594DA000CADC4 /* Debug */,
+				F22B96992CB594DA000CADC4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F22B969A2CB594DA000CADC4 /* Build configuration list for PBXNativeTarget "MultiIndex" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F22B969B2CB594DA000CADC4 /* Debug */,
+				F22B969C2CB594DA000CADC4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F22B96872CB594DA000CADC4 /* Project object */;
+}

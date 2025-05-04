@@ -30,6 +30,7 @@
 #include <thread>
 #include <chrono>
 #include <iostream>
+#include <atomic>
 
 namespace UTest {
 class A {
@@ -173,7 +174,7 @@ void MultiTreadedTest() {
     
     std::list<std::thread> threads;
     for (int i = 0; i < 16; ++i) {
-        threads.emplace_back([&active, &stopped, &cleared, &rounds, i]() {
+        threads.emplace_back([&, i]() {
             while (!active) {
                 std::this_thread::yield();
             }
