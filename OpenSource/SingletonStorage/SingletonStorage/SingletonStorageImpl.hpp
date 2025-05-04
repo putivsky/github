@@ -27,7 +27,12 @@
 
 #include <utility>
 #include <format>
+#ifdef _WIN32
+#include <windows.h>
+#include <dbghelp.h>
+#else
 #include <cxxabi.h>
+#endif
 #include <stdexcept>
 #include <type_traits>
 
@@ -215,7 +220,15 @@ std::string SingletonStorageImpl::demnagleType()
 noexcept(true) {
     auto& info = typeid(T);
     int status = -1;
+
+#ifdef _WIN32
+    char* readableName = (char*)malloc(1024 * sizeof(char));
+    readableName[0] = 0, 
+    ::UnDecorateSymbolName(typeid(info).name(), readableName, 1024, 0);
+#else
+
     char *readableName = abi::__cxa_demangle(info.name(), NULL, NULL, &status);
+#endif
     std::string name(status == 0 ? readableName : info.name());
     ::free(readableName);
     return name;
