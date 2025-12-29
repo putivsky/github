@@ -60,12 +60,16 @@ class SingletonStorageFactory {
     // then method throws an exception.
     // ARGS must match the T(...) constructor parameters.
     // Constructor can throw an exception as well.
+    // Caller must lock weak_ptr before accessing the singleton object,
+    // it can be null because other thread has destoyed the object.
     template < typename T, typename ...ARGS >
     static std::weak_ptr<T> create(ARGS&& ...args) noexcept(false);
     
     // If object has not been created yet or already been destroyed
     // method returns null weak_ptr,
     // otherwise returns weak_ptr to the singleton instance.
+    // Caller must lock weak_ptr before accessing the singleton object,
+    // it can be null because other thread has destoyed the object.
     template< typename T >
     static std::weak_ptr<T> get() noexcept(true);
     

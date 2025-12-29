@@ -27,16 +27,17 @@
 
 #pragma once
 
-#include <memory>
-#include <shared_mutex>
-#include <mutex>
 #include <list>
-#include <map>
-#include <unordered_map>
-#include <typeindex>
-#include <optional>
-#include <type_traits>
 #include <assert.h>
+#include <memory>
+#include <mutex>
+#include <map>
+#include <shared_mutex>
+#include <optional>
+#include <typeinfo>
+#include <typeindex>
+#include <type_traits>
+#include <unordered_map>
 
 namespace SM {
 
@@ -45,19 +46,26 @@ class SingletonStorageImpl
     // Base class for casting to the derived type.
     struct VTObject {
         virtual ~VTObject() = default;
+        VTObject(std::type_index&& type) : mType(type) {}
+        
         template< typename T >
-        static std::shared_ptr<T> cast(std::shared_ptr<VTObject>& obj) {
-            // Convert to StorageObject<T> first
-            auto stObject = dynamic_cast<StorageObject<T>*>(obj.get());
+        std::shared_ptr<T> cast() {
+            // Make sure the type is the same
+            assert(mType == SingletonStorageImpl::makeKey<T>());
+            auto stObject = dynamic_cast<StorageObject<T>*>(this);
             assert(stObject != nullptr);
             return stObject->mObject;
         }
+        
+        const std::type_index mType;
     };
 
     // Base class for casting to the derived type.
     template< typename T >
     struct StorageObject : VTObject {
-        StorageObject(std::shared_ptr<T> ptr) : mObject(ptr) {}
+        friend struct VTObject;
+        StorageObject(std::shared_ptr<T> ptr) : VTObject(SingletonStorageImpl::makeKey<T>()), mObject(ptr) {}
+    private:
         std::shared_ptr<T> mObject;
     };
     
@@ -92,10 +100,14 @@ private:
     // key => std::type_index(typeid(StorageObject<T>))
     // Construct the unique key by the specified type.
     template < typename T >
-    static std::type_index makeKey() noexcept(true);
+    static std::type_index makeKey() noexcept(true) {
+        return std::type_index(typeid(T));
+    }
     // Construct the unique key for the specified object,
     // even object got cast the base class (RTTI).
-    static std::type_index makeKeyObject(const VTObject& obj) noexcept(true);
+    static std::type_index makeKeyObject(const VTObject& obj) noexcept(true) {
+        return obj.mType;
+    }
     
     // Outputs the readable name for the provided type.
     template< typename T >
