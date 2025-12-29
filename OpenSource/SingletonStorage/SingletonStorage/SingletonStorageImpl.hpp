@@ -220,16 +220,17 @@ std::string SingletonStorageImpl::demnagleType()
 noexcept(true) {
     auto& info = typeid(T);
     int status = -1;
+    const char* decoratedName = info.name();
 
 #ifdef _WIN32
     char* readableName = (char*)malloc(1024 * sizeof(char));
-    readableName[0] = 0, 
-    ::UnDecorateSymbolName(typeid(info).name(), readableName, 1024, 0);
+    DWORD processed = ::UnDecorateSymbolName(decoratedName, readableName, 1024, 0);
+    readableName[processed] = 0;
+    status = processed > 0 ? 0 : -1;
 #else
-
-    char *readableName = abi::__cxa_demangle(info.name(), NULL, NULL, &status);
+    char *readableName = abi::__cxa_demangle(decoratedName, NULL, NULL, &status);
 #endif
-    std::string name(status == 0 ? readableName : info.name());
+    std::string name(status == 0 ? readableName : decoratedName);
     ::free(readableName);
     return name;
 }
