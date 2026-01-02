@@ -35,44 +35,25 @@
 #endif
 #include <stdexcept>
 
+
 namespace SM {
+
+thread_local std::unordered_set<std::type_index> lRecursiveFlags;
 
 template < typename T, typename ...ARGS >
 std::weak_ptr<T> SingletonStorageImpl::create(ARGS&&... args)
     noexcept( false ) {
     // LOCK READ (shared) mutex first,
-    // if object if not available
-    // => write lock,
-    //  if object if not available => create it,
-    //  otherwise return existed object.    
+    // if object exists return it.
     std::shared_lock<std::shared_mutex> readLock(mLock);
     auto wptr = find<T>(true /*disallow deleted*/);
     if (0 != wptr.use_count()) {
         return wptr;
     } 
-    // RELEASE READ (shared) mutex.
     readLock.unlock();
-    
+            
     // Protect from the recursive calls for the same type from the same thread.
-    // Enter the write (recursive) lock.
-    // At this point only call from the same thread can pass through.
-    // EXCLUSIVE (recursive) mutex.
-    std::lock_guard<std::recursive_mutex> writeRecursiveLock(mRecursiveLock);
-    // READ (shared) LOCK again.
-    // First, check instance existence again,
-    // another thread can already create the correspondent instance.
-    readLock.lock();
-    auto it = mFastAccess.find(makeKey<T>());
-    if (it != mFastAccess.end()) {
-        // Another thread between rwlock.unlock() and reLock.lock() calls
-        // can delete singleton instance of the same type.
-        return find<T>(true /*disallow deleted*/);
-    }
-    // RELEASE READ (shared) mutex, but still in EXCLUSIVE (recursive) mutex.
-    readLock.unlock();
-    
-    auto itInsert = mRecursiveFlags.insert({makeKey<T>(), false});
-    if (itInsert.first->second) {
+    if (!lRecursiveFlags.insert(makeKey<T>()).second) {
         // The same thread tries to create the same type of singleton.
         std::string error = "Object [";
         error += demnagleType<T>();
@@ -80,43 +61,66 @@ std::weak_ptr<T> SingletonStorageImpl::create(ARGS&&... args)
 
         throw std::logic_error(error);
     }
-    
-    // Set flag.
-    itInsert.first->second = true;
-    
+        
     // Reset flag even in case T(...) may throw an exception.
-    ScopeGuard guard([&]() {
-        // Reset flag, can't use iterator,
-        // it can be invalidated by a recursive call,
-        // or even deleted by "reset" method
-        // This call (destructor) is under EXCLUSIVE (recursive) lock.
-        auto pit = mRecursiveFlags.find(makeKey<T>());
-        if (pit != mRecursiveFlags.end()) {
-            pit->second = false;
-        }
+    scope_exit guard([&]() {
+        lRecursiveFlags.erase(makeKey<T>());
     });
-    
+            
+    // Create a new std::shared_ptr<T> instance.
     // At this point T(...) constructor can call this method again recursively,
-    // for the different singleton type it's allowed,
-    // for the same exception will be thrown (see above).
+    // for the different singleton types it's allowed,
+    // for the same singleton type exception will be thrown.
     auto newObject = std::make_shared<T>(std::forward<ARGS>(args)...);
 
-    // Create a new StorageObject<T> instance.
-    // WRITE (shared) mutex
+    // LOCK WRITE (shared) mutex.
     std::unique_lock<std::shared_mutex> writeLock(mLock);
-    // Insert into the beginning,
-    // making sure the destruction will be performed in a reverse order.
-    mInstances.push_front(std::make_shared<StorageObject<T>>(newObject));
-    // Add the new key for the fast access map.
-    mFastAccess.insert({makeKey<T>(), IteratorOptional(mInstances.begin())});
-    
-    return std::weak_ptr<T>(newObject);
+    // Try to insert,
+    // if failed it means another thread could already create
+    // the correspondent instance and even destroy it.
+    auto itAccess = mFastAccess.insert({makeKey<T>(), IteratorOptional()});
+    auto& refOptional = itAccess.first->second;
+    if (itAccess.second) {
+       // Insert into the beginning,
+       // making sure the destruction will be performed in a reverse order.
+       mInstances.push_front(std::make_shared<StorageObject<T>>(newObject));
+       // update mFastAccess
+        refOptional = IteratorOptional(mInstances.begin());
+    } else if (!itAccess.first->second) {
+       // Object has been destroyed already.
+       std::string error = "Object [";
+       error += demnagleType<T>();
+       error += "] has been deleted";
+       throw std::logic_error(std::move(error));
+    }
+        
+    return std::weak_ptr<T>((*refOptional.value())->template cast<T>());
 }
     
 template< typename T >
 std::weak_ptr<T> SingletonStorageImpl::get() noexcept(true) {
-    std::shared_lock rwlock(mLock);
+    std::shared_lock readlock(mLock);
     return find<T>(false /*ignore deleted*/);
+}
+
+template< typename T >
+void SingletonStorageImpl::deleteType(StorageType& objectsToBeDeleted) {
+    auto itAccess = mFastAccess.find(makeKey<T>());
+    if (itAccess == mFastAccess.end() || !itAccess->second) {
+        // The singleton of the specified type
+        // doesn't exist or has been deleted.
+        return;
+    }
+    // Copies iterator
+    auto itInstances = itAccess->second.value();
+    // Saves object to the container.
+    objectsToBeDeleted.push_back(*itInstances);
+    // Removes instance of object.
+    // But keeps the mFastAccess key
+    // to track deleted objects.
+    mInstances.erase(itInstances);
+    // Resets an optional value to empty and mark the deleted instance.
+    itAccess->second = IteratorOptional();
 }
 
 template< typename ...TS >
@@ -125,36 +129,7 @@ void SingletonStorageImpl::destroy() noexcept(true) {
     std::list<std::shared_ptr<VTObject>> objectsToBeDeleted;
     // Lock the access
     std::unique_lock<std::shared_mutex> writeLock(mLock);
-    // Create a function to deal with the only one type of the singleton object.
-    auto func = [&](std::type_index idx) {
-        auto itAccess = mFastAccess.find(idx);
-        if (itAccess == mFastAccess.end() || !itAccess->second) {
-            // The singleton of the specified type
-            // doesn't exist or has been deleted.
-            return;
-        }
-        // Copies iterator
-        auto itInstances = itAccess->second.value();
-        // Saves object to the container.
-        objectsToBeDeleted.push_back(*itInstances);
-        // Removes instance of object.
-        // But keeps the mFastAccess key
-        // to track deleted objects.
-        mInstances.erase(itInstances);
-        // Resets an optional value to empty and mark the deleted instance.
-        itAccess->second = IteratorOptional();
-    };
-    
-    // Creates the tuple of std::type_identity objects,
-    // Then loops through such tuple object and invokes func
-    // for each key made from the one of the types.
-    std::apply(
-               [&](auto... ts) {
-                   (func(makeKey< typename decltype(ts)::type >()), ...);
-               },
-        std::make_tuple(std::type_identity<TS>()...)
-     );
- 
+    (deleteType<TS>(objectsToBeDeleted), ...);
     // Releases the lock before destroying singleton objects.
     writeLock.unlock();
     // Because singleton objects are wrapped by the shared_ptr
@@ -203,17 +178,16 @@ void SingletonStorageImpl::clearUp(bool removeKeys) noexcept(true)
 
 void SingletonStorageImpl::clear() noexcept(true) {
     clearUp(false);
+    assert(lRecursiveFlags.empty());
 }
 
 void SingletonStorageImpl::reset() noexcept(true) {
-    std::lock_guard<std::recursive_mutex> reLock(mRecursiveLock);
     clearUp(true);
-    mRecursiveFlags.clear();
+    assert(lRecursiveFlags.empty());
 }
 
 template< typename T >
-std::string SingletonStorageImpl::demnagleType()
-noexcept(true) {
+std::string SingletonStorageImpl::demnagleType() noexcept(true) {
     auto& info = typeid(T);
     int status = -1;
     const char* decoratedName = info.name();

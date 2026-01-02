@@ -38,6 +38,7 @@
 #include <typeindex>
 #include <type_traits>
 #include <unordered_map>
+#include <unordered_set>
 
 namespace SM {
 
@@ -71,9 +72,9 @@ class SingletonStorageImpl
     
     // Simple scope guard
     template < typename T >
-    struct ScopeGuard {
-        ScopeGuard(T&& f) : mF(f) {}
-        ~ScopeGuard() { mF(); }
+    struct scope_exit {
+        scope_exit(T&& f) : mF(f) {}
+        ~scope_exit() { mF(); }
     
     private:
        T mF;
@@ -91,6 +92,7 @@ public:
     void reset() noexcept(true);
     
 private:
+    using StorageType = std::list<std::shared_ptr<VTObject>>;
     // Helper methods.
     // Finds the singleton instance by the specified type.
     // Thows an exception if object has been deleted already.
@@ -118,6 +120,9 @@ private:
     // will be removed as well.
     void clearUp(bool removeKeys) noexcept(true);
 
+    template< typename T >
+    void deleteType(StorageType& objectsToBeDeleted);
+    
 private:
     // Protects access to the singleton instances,
     // multiple readers, single writer access.
@@ -125,7 +130,6 @@ private:
     
     // Keeps the list of std::shared_ptr<StorageObject<T>> objects
     // for different types, casted to the base class VTObject.
-    using StorageType = std::list<std::shared_ptr<VTObject>>;
     StorageType mInstances;
     
     // Maps unique keys of different types to the iterators
@@ -149,10 +153,6 @@ private:
 //  i.e. auto it = mFastAccess.find(makeKey<T>());
 //      it != mFastAccess.end() &&
 //      it->second == false
-
-    // Protection for the recursive calls for the same type.
-    std::recursive_mutex mRecursiveLock;
-    std::unordered_map<std::type_index, bool> mRecursiveFlags;
 };
 
 }
